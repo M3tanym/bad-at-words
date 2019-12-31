@@ -6,7 +6,7 @@ VERSION = 0.1
 
 @app.get("/")
 def root():
-    return {"Welcome" : "The Game by Timothy Ford and Ben Gillet"}
+    return {"Welcome" : "The Game by Timothy Ford and Ben Gillett"}
 
 @app.get("/version")
 def version():
