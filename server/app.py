@@ -8,22 +8,19 @@ import json
 
 from player import Player
 from logic import handleTouch
-
-
-VERSION = 0.1
+from settings import VERSION
 
 app = FastAPI()
 
+# mounts the static index.html file
 app.mount("/client", StaticFiles(directory="../client"), name="client")
 
+# Globals:
 words = []
 roundWords = []
 players = []
 
 playerIdCount = 0
-
-def get_sample():
-    return sample(words, 25)
 
 @app.on_event("startup")
 async def startup_event():
@@ -103,3 +100,13 @@ def handleMessage(data):
         return None
     else:
         print("Case may not be handled yet")
+
+
+def get_sample():
+    """
+    Gets 25 random words from words file
+    
+    Returns:
+        [List: [str]] -- list of 25 words
+    """
+    return sample(words, 25)

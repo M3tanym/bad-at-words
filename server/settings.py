@@ -8,3 +8,5 @@ BLUE = "blue"
 WHITE = "white"
 BLACK = "black"
 
+# version counter
+VERSION = 0.1
