@@ -8,7 +8,7 @@ import json
 from pprint import pprint
 
 from player import Player
-from logic import handleTouch, handleTeamChange, handleRoleChange
+from logic import handleTouch, handleTeamChange, handleRoleChange, handleNameChange
 from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER
 from board import Board
 
@@ -159,14 +159,23 @@ async def handleMessage(data):
         # change the role
         elif rWhich is "role":
             handleRoleChange(players, rID, rValue)
+        # change the name
+        elif rWhich is "name":
+            handleNameChange(players, rID, rValue)
         else:
             print("ERROR - set with incorrect `which` value")
-
+    elif rType == "pass":
+        # end the turn
+        print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
+        
+        # force team change
+        numTouches = 0
+        turnLogic()
     else:
         print("ERROR - Case may not be handled yet")
 
 
-def turnLogic():
+async def turnLogic():
     """
     Function that handles turn changing and touches
     """
@@ -174,10 +183,22 @@ def turnLogic():
     global numTouches
     global defaultNumTouches
     global turn
+    global sockets
 
     if numTouches < 1:
             numTouches = defaultNumTouches
             turn = not turn
+
+    teamVal = RED if turn is False else BLUE
+
+    r = {
+        "type" : "turn",
+        "team" : teamVal
+    }
+
+    # broadcast turn change to everyone
+    msg = json.dumps(r)
+    broadcast(sockets, msg)
 
     print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 

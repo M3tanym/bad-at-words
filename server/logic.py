@@ -24,3 +24,10 @@ def handleRoleChange(players, rID: int, rValue: str):
             print(p)
             p.role = rValue
             print(p)
+
+def handleNameChange(players, rID: int, rValue: str):
+    for p in players:
+        if p.id is rID:
+            print(p)
+            p.name = rValue
+            print(p)
