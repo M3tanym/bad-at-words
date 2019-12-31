@@ -88,7 +88,6 @@ function updateBoard(words) {
       inner.innerText = "\xa0";
       if (w.visible) {
         inner.classList.add(w.color);
-        //inner.addEventListener("mouseover", bagel);
       }
       else {
         inner.classList.add("white");
