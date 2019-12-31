@@ -125,6 +125,14 @@ async def handleMessage(data):
         rWord = str(r["word"])
         # player id
         rPlayer = int(r["player"])
+        teamTurn = RED if turn is False else BLUE
+
+        for p in players:
+            if p.id == rPlayer:
+                if p.color != teamTurn:
+                    print("WARNING - player from wrong team touched")
+                    return
+
         numTouches = numTouches - 1
 
         print("INFO - handling a touch event for '{w}'".format(w = rWord))
@@ -140,7 +148,6 @@ async def handleMessage(data):
 
         # Check if incorrect guess switches teams
         space = b.getSpaceInfo(rWord)
-        teamTurn = RED if turn is False else BLUE
 
         if space.color != teamTurn:
             await turnLogic(True)
