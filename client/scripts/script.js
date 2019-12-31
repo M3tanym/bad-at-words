@@ -196,7 +196,7 @@ function setName(name) {
 
 function setTurn(r) {
   let turn = document.getElementById("turn");
-  turn.innerText = r.team + " Turn - " + r.touches + " guesses left"
+  turn.innerText = r.team + " turn - " + r.touches + " guesses left"
   turn.className = "";
   turn.classList.add(r.team);
 }
