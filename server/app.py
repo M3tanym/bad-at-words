@@ -114,7 +114,7 @@ async def handleMessage(data):
         rWord = str(r["word"])
         # player id
         rPlayer = int(r["player"])
-        numTouches == numTouches - 1
+        numTouches = numTouches - 1
 
         print("INFO - handling a touch event for '{w}'".format(w = rWord))
         print("INFO - team {c} has {n} touches left".format(c = RED if turn is False else BLUE, n = numTouches))
