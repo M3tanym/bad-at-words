@@ -127,6 +127,7 @@ div .box {
 td .content {
   font-family: 'Indie Flower', serif;
   font-size: 3vw;
+  height: 5vw;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 5px;

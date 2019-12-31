@@ -19,20 +19,20 @@ class Space:
     def __init__(self, inColor: str, inWord: str):
         """
         Default constructor for space
-        
+
         Arguments:
             inColor {str} -- color to set space to
             inWord {str} -- word for that space
         """
         self.color = inColor
         self.word = inWord
-    
+
     def __str__(self):
         """
         String overload for Space
         """
-        return "{w} -- ({c})".format(w = self.word, c = self.color)
-    
+        return "{w} -- ({c}) -- ({v})".format(w = self.word, c = self.color, v = self.visible)
+
     def toDict(self):
         """
         Makes a dictionary of space
@@ -52,7 +52,7 @@ class Board:
     def __init__(self, wordList):
         """
         Constructor for a board
-        
+
         Arguments:
             wordList {List: [str]} -- randomly sampled list of 25 words
         """
@@ -92,7 +92,7 @@ class Board:
             r += "\n"
             end += step
             start += step
-        
+
         return r
 
     def toJson(self):
@@ -111,14 +111,14 @@ class Board:
     def setVisibleFlag(self, word: str):
         """
         Given a word, change that spaces visible flag to True
-        
+
         Arguments:
             word {str} -- the word
         """
 
         # TODO: I know this isn't optimal but I don't know what is
         for s in self.spaces:
-            if s.word is word:
+            if s.word == word:
                 s.visible = True
 
 
