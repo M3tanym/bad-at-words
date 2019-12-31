@@ -20,6 +20,7 @@ app.mount("/client", StaticFiles(directory="../client"), name="client")
 words = []
 roundWords = []
 players = []
+sockets = [] # store sockets for broadcasting message
 
 playerIdCount = 0
 
@@ -50,14 +51,14 @@ async def version():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
 
+    # Add to list of sockets
+    global sockets
+    sockets.append(websocket)
+
     # new player gets created on new websocket
     global playerIdCount, players
     players.append(Player("name", playerIdCount, "red"))
     playerIdCount += 1
-
-    # send board json on start
-    global b
-    await websocket.send_text(b.toJson)
 
     # Loop to handle all subsequent requets
     while True:
@@ -83,7 +84,7 @@ def handleMessage(data):
 
     global b
 
-    # Handles a word being touched
+    #  Handles a word being touched
     if rType == "touch":
         """
         {
@@ -101,8 +102,40 @@ def handleMessage(data):
 
         # return reponse to client?
         return None
+    # Start game message
+    elif rType == "start":
+        """
+        {
+            type : "start"
+            player : "id"
+        }
+        """
+        global b
+        global sockets
+
+        # send the board to everyone on start
+        msg = b.toJson()
+        broadcast(sockets, msg)
     else:
         print("Case may not be handled yet")
+
+'''
+    # Set team
+    """
+    {
+        player : id,
+        team : "team"
+    }
+    """
+
+    # Set role
+    """
+    {
+        player : id,
+        type : "touch"
+    }
+    """
+'''
 
 
 def get_sample():
@@ -113,3 +146,16 @@ def get_sample():
         [List: [str]] -- list of 25 words
     """
     return sample(words, 25)
+
+
+def broadcast(socketList: WebSocket, message: str):
+    """
+    Broadcasts the same message across all sockets
+    
+    Arguments:
+        socketList {List: [websockets]} -- list of all active websockets
+        message {str} -- json message to send 
+    """
+    for s in socketList:
+        s.send_text(message)
+
