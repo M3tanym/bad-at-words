@@ -88,16 +88,17 @@ function updateBoard(words) {
       inner.innerText = "\xa0";
       if (w.visible) {
         inner.classList.add(w.color);
+        //inner.addEventListener("mouseover", bagel);
       }
       else {
         inner.classList.add("white");
         inner.innerText = w.word;
+        inner.addEventListener("click", touchWord);
       }
       outer.classList.add("box");
       outer.appendChild(inner);
       td.appendChild(outer);
       tr.appendChild(td);
-      inner.addEventListener("click", touchWord);
       j++;
     }
     table.appendChild(tr);
