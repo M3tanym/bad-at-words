@@ -5,6 +5,7 @@ from starlette.staticfiles import StaticFiles # serve static files
 from starlette.websockets import WebSocket # host websockets
 
 import json
+from pprint import pprint
 
 from player import Player
 from logic import handleTouch
@@ -65,14 +66,13 @@ async def websocket_endpoint(websocket: WebSocket):
         # receive json message from client
         data = await websocket.receive_text()
 
-        r = handleMessage(data)
+        r = await handleMessage(data)
 
         # if reponse generated, send response
         if r is not None:
             await websocket.send_text(r)
 
-
-def handleMessage(data):
+async def handleMessage(data):
     """
     handles different json messages from websocket connection
 
@@ -83,6 +83,8 @@ def handleMessage(data):
     rType = r["type"]
 
     global b
+    global sockets
+
 
     #  Handles a word being touched
     if rType == "touch":
@@ -99,6 +101,8 @@ def handleMessage(data):
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
+        msg = b.toJson()
+        await broadcast(sockets, msg)
 
         # return reponse to client?
         return None
@@ -110,11 +114,10 @@ def handleMessage(data):
             player : "id"
         }
         """
-        global sockets
-
         # send the board to everyone on start
         msg = b.toJson()
-        broadcast(sockets, msg)
+        await broadcast(sockets, msg)
+        return None
     else:
         print("Case may not be handled yet")
 
@@ -147,7 +150,7 @@ def get_sample():
     return sample(words, 25)
 
 
-def broadcast(socketList: WebSocket, message: str):
+async def broadcast(socketList: WebSocket, message: str):
     """
     Broadcasts the same message across all sockets
 
@@ -155,5 +158,8 @@ def broadcast(socketList: WebSocket, message: str):
         socketList {List: [websockets]} -- list of all active websockets
         message {str} -- json message to send
     """
-    for s in socketList:
-        s.send_text(message)
+    for i in range(len(socketList) - 1, -1, -1):
+        try:
+            await socketList[i].send_text(message)
+        except:
+            socketList.pop(i)
