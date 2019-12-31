@@ -178,17 +178,14 @@ async def handleMessage(data):
 
         print("INFO - setting {w} for player {p} as {v}".format(w = rWhich, p = rID, v = rValue))
 
-        # change the team
-        if rWhich is "team":
+        if rWhich == "team":
             handleTeamChange(players, rID, rValue)
-        # change the role
-        elif rWhich is "role":
+        elif rWhich == "role":
             handleRoleChange(players, rID, rValue)
-        # change the name
-        elif rWhich is "name":
+        elif rWhich == "name":
             handleNameChange(players, rID, rValue)
         else:
-            print("ERROR - set with incorrect `which` value")
+            print("ERROR - set with incorrect `which` value ({w})".format(w = rWhich))
     elif rType == "pass":
         # end the turn
         rID = int(r["player"])
