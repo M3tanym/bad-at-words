@@ -32,7 +32,7 @@ async def startup_event():
     with open("words.txt") as word_file:
         words = word_file.read().splitlines()
 
-    global roundWords 
+    global roundWords
     roundWords = get_sample()
 
     global b
@@ -75,7 +75,7 @@ async def websocket_endpoint(websocket: WebSocket):
 def handleMessage(data):
     """
     handles different json messages from websocket connection
-    
+
     Arguments:
         data {json} -- json message from client
     """
@@ -110,7 +110,6 @@ def handleMessage(data):
             player : "id"
         }
         """
-        global b
         global sockets
 
         # send the board to everyone on start
@@ -141,7 +140,7 @@ def handleMessage(data):
 def get_sample():
     """
     Gets 25 random words from words file
-    
+
     Returns:
         [List: [str]] -- list of 25 words
     """
@@ -151,11 +150,10 @@ def get_sample():
 def broadcast(socketList: WebSocket, message: str):
     """
     Broadcasts the same message across all sockets
-    
+
     Arguments:
         socketList {List: [websockets]} -- list of all active websockets
-        message {str} -- json message to send 
+        message {str} -- json message to send
     """
     for s in socketList:
         s.send_text(message)
-
