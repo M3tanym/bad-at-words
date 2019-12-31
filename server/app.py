@@ -90,12 +90,14 @@ async def handleMessage(data):
     r = json.loads(data)
     rType = r["type"]
 
+    print("INFO - received request of type [{t}]".format(t = rType))
+
     global b
     global players
     global sockets
 
     #  Handles a word being touched
-    if rType is "touch":
+    if rType == "touch":
         """
         {
             type : "touch",
@@ -107,13 +109,15 @@ async def handleMessage(data):
         # player id
         rPlayer = int(r["player"])
 
+        print("INFO - handling a touch event for '{w}'".format(w = rWord))
+
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
 
         # return reponse to client?
         return None
     # Start game message
-    elif rType is "start":
+    elif rType == "start":
         """
         {
             type : "start"
@@ -121,14 +125,18 @@ async def handleMessage(data):
         }
         """
 
+        print("INFO - starting the game with {n} players".format(n = len(players)))
+
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)
         return None
-    elif rType is "set":
+    elif rType == "set":
         rWhich = str(r["which"])
         rID = int(r["player"])
         rValue = str(r["value"])
+
+        print("INFO - setting {w} for player {p} as {v}".format(w = rWhich, p = rID, v = rValue))
 
         # change the team
         if rWhich is "team":
