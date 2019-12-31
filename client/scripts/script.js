@@ -54,11 +54,14 @@ function processCommand(r) {
     case "test":
       console.log("test!");
     break;
-    case "id":
-      PLAYERID = r.id;
+    case "playerid":
+      PLAYERID = r.value;
     break;
     case "board":
       updateBoard(r.spaces);
+    break;
+    case "turn":
+      setTurn(r);
     break;
     default:
       console.log("unknown command " + r.type);
@@ -82,13 +85,14 @@ function updateBoard(words) {
       let outer = document.createElement("div");
       let inner = document.createElement("div");
       inner.classList.add("content");
+      inner.innerText = "\xa0";
       if (w.visible) {
         inner.classList.add(w.color);
       }
       else {
         inner.classList.add("white");
+        inner.innerText = w.word;
       }
-      inner.innerText = w.word;
       outer.classList.add("box");
       outer.appendChild(inner);
       td.appendChild(outer);
@@ -99,6 +103,8 @@ function updateBoard(words) {
     table.appendChild(tr);
   }
   container.appendChild(table);
+  let pass_container = document.getElementById("pass_container");
+  pass_container.className = "";
 }
 
 function touchWord(e) {
@@ -106,6 +112,14 @@ function touchWord(e) {
     type: "touch",
     player: PLAYERID,
     word: e.target.innerText
+  };
+  sendMessage(msg);
+}
+
+function passTurn() {
+  let msg = {
+    type: "pass",
+    player: PLAYERID,
   };
   sendMessage(msg);
 }
@@ -136,11 +150,29 @@ function initializeEvents() {
     guesser.classList.add("selected");
     setTeamRole("role", "guesser");
   });
+
   let start = document.getElementById("start");
   start.addEventListener("click", startGame);
+
+  let name = document.getElementById("name");
+  name.addEventListener("change", function() {
+    setName(name.value);
+  });
+
+  let pass = document.getElementById("pass");
+  pass.addEventListener("click", passTurn);
 }
 
 function setTeamRole(which, value) {
+  if (which == "role") {
+    let role_text = document.getElementById("role_text");
+    role_text.innerText = value;
+  }
+  else {
+    let bar = document.getElementById("bar");
+    bar.className = "";
+    bar.classList.add(value);
+  }
   let msg = {
     type: "set",
     player: PLAYERID,
@@ -148,6 +180,25 @@ function setTeamRole(which, value) {
     value: value
   };
   sendMessage(msg);
+}
+
+function setName(name) {
+  let name_text = document.getElementById("name_text");
+  name_text.innerText = name;
+  let msg = {
+    type: "set",
+    player: PLAYERID,
+    which: "name",
+    value: name
+  };
+  sendMessage(msg);
+}
+
+function setTurn(r) {
+  let turn = document.getElementById("turn");
+  turn.innerText = r.team + " Turn - " + r.touches + " guesses left"
+  turn.className = "";
+  turn.classList.add(r.team);
 }
 
 function startGame() {

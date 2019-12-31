@@ -13,8 +13,17 @@
     <div id="header">
       <h1 class="title">we're bad at words</h1>
     </div>
-    <div id="table_container"></div>
+    <div id="bar" class="gray">
+      <div class="top_text" id="name_text">[name]</div>
+      &nbsp;-&nbsp;
+      <div class="top_text" id="role_text">[role]</div>
+    </div>
+    <div id="turn" class="gray">Turn</div>
     <div id="setup">
+      <h1 class="fancy center">Name:</h1>
+      <div class="selection_box">
+        <input id="name" type="text" />
+      </div>
       <h1 class="fancy center">Team:</h1>
       <div class="selection_box">
           <div class="option_box red" id="pick_red"><div class="texty">red</div></div>
@@ -27,6 +36,12 @@
       </div>
       <div class="selection_box">
         <div class="option_box" id="start"><div class="texty">Start!</div></div>
+      </div>
+    </div>
+    <div id="table_container"></div>
+    <div id="pass_container" class="hidden">
+      <div class="selection_box">
+        <div class="option_box" id="pass"><div class="fancy">Pass</div></div>
       </div>
     </div>
   </body>

@@ -55,6 +55,11 @@
   margin-right: auto;
 }
 
+#pass-container {
+  width: 100%;
+  margin-top: 50px;
+}
+
 .selection_box {
   width: 90%;
   display: flex;
@@ -103,10 +108,57 @@
   background-color: #4E4B4B;
 }
 
-#start {
+.gray {
+  background-color: lightgray;
+}
+
+#start, #pass {
   margin-top: 20px;
   padding: 6px;
   border: 2px solid black;
+}
+
+#bar {
+  width: 80%;
+  height: 8vw;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Indie Flower', serif;
+  font-size: 5vw;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#turn {
+  width: 100%;
+  height: 6vw;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  font-family: 'Indie Flower', serif;
+  font-size: 5vw;
+  text-align: center;
+  padding: 5px;
+}
+
+.top_text {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+#name {
+  font-family: 'Indie Flower', serif;
+  font-size: 4vw;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #F1E8AC;
+  border: none;
 }
 
 table {
