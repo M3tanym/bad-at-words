@@ -2,7 +2,6 @@
 function init() {
   // call these routines when the page has finished loading
   initializeEvents();
-  loadFields();
   initializeSocket();
 }
 
@@ -49,20 +48,19 @@ function initializeEvents() {
 }
 
 // xhr sample
-function loadFields()
-{
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function()
-  {
-    if(this.readyState == 4 && this.status == 200)
-    {
-      var r = JSON.parse(xhr.responseText);
-      addFields(r.values);
-    }
-  };
-  xhr.open("GET", "v1/fields/", true);
-  xhr.send();
-}
+// function loadFields() {
+//   var xhr = new XMLHttpRequest();
+//   xhr.onreadystatechange = function()
+//   {
+//     if(this.readyState == 4 && this.status == 200)
+//     {
+//       var r = JSON.parse(xhr.responseText);
+//       addFields(r.values);
+//     }
+//   };
+//   xhr.open("GET", "v1/fields/", true);
+//   xhr.send();
+// }
 
 // Page init
 window.addEventListener("load", init, false);

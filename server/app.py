@@ -4,7 +4,7 @@ from starlette.staticfiles import StaticFiles
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="../client/index.html"), name="static")
+app.mount("/", StaticFiles(directory="../client"), name="index.html")
 
 
 VERSION = 0.1
