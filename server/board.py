@@ -121,6 +121,23 @@ class Board:
             if s.word == word:
                 s.visible = True
 
+    def getSpaceInfo(self, word: str):
+        """
+        Returns the representation for the given word space
+        
+        Arguments:
+            word {str} -- the word to look for
+        """
+
+        for s in self.spaces:
+            if s.word == word:
+                return s
+
+    #def checkWin(self):
+    #    firstTeam = False # make red default first team
+
+
+
 
 if __name__ == "__main__":
     # Test word sample

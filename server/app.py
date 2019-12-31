@@ -8,7 +8,7 @@ import json
 from pprint import pprint
 
 from player import Player
-from logic import handleTouch, handleTeamChange, handleRoleChange
+from logic import handleTouch, handleTeamChange, handleRoleChange, handleNameChange
 from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER
 from board import Board
 
@@ -126,8 +126,15 @@ async def handleMessage(data):
 
         # TODO: check win condition
 
-        # check turn change
-        turnLogic()
+
+        # Check if incorrect guess switches teams
+        space = b.getSpaceInfo(rWord)
+        teamTurn = RED if turn is False else BLUE
+
+        if space.color != teamTurn:
+            await turnLogic(True)
+        else:
+            await turnLogic()
         
         # return reponse to client?
         return None
@@ -159,14 +166,32 @@ async def handleMessage(data):
         # change the role
         elif rWhich is "role":
             handleRoleChange(players, rID, rValue)
+        # change the name
+        elif rWhich is "name":
+            handleNameChange(players, rID, rValue)
         else:
             print("ERROR - set with incorrect `which` value")
+    elif rType == "pass":
+        # end the turn
+        rID = int(r["player"])
+        teamTurn = RED if turn is False else BLUE
+
+        global players
+        for p in players:
+            if p.role == GUESSPLAYER and p.color == teamTurn:
+                print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
+                
+                # force team change
+                await turnLogic(True)
+                return None
+
+        print("WARNING - player from wrong team requested pass")
 
     else:
         print("ERROR - Case may not be handled yet")
 
 
-def turnLogic():
+async def turnLogic(forceTurnChange = False):
     """
     Function that handles turn changing and touches
     """
@@ -174,12 +199,27 @@ def turnLogic():
     global numTouches
     global defaultNumTouches
     global turn
+    global sockets
 
-    if numTouches < 1:
+    if forceTurnChange:
+        print("INFO - the teams have been FORCED to change")
+
+    if numTouches < 1 or forceTurnChange:
             numTouches = defaultNumTouches
             turn = not turn
+            print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 
-    print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
+    teamVal = RED if turn is False else BLUE
+
+    r = {
+        "type" : "turn",
+        "team" : teamVal,
+        "touches" : numTouches
+    }
+
+    # broadcast turn change to everyone
+    msg = json.dumps(r)
+    broadcast(sockets, msg)
 
 
 def get_sample():
