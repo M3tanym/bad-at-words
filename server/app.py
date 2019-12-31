@@ -45,12 +45,12 @@ async def websocket_endpoint(websocket: WebSocket):
     }
 
     r = json.dumps(response)
-    await websocket.send_text(str(r))
+    #await websocket.send_text(str(r))
 
 
     while True:
         data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+        print("Message! " + data)
 
 
 
