@@ -108,6 +108,19 @@ class Board:
 
         return json.dumps(r)
 
+    def setVisibleFlag(self, word: str):
+        """
+        Given a word, change that spaces visible flag to True
+        
+        Arguments:
+            word {str} -- the word
+        """
+
+        # TODO: I know this isn't optimal but I don't know what is
+        for s in self.spaces:
+            if s.word is word:
+                s.visible = True
+
 
 if __name__ == "__main__":
     # Test word sample

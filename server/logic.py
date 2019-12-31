@@ -2,6 +2,8 @@
 Functions to handle game logic
 """
 
-def handleTouch(word: str, player: int):
-    print("What we will do when this happens:")
-    print(word, player)
+from board import Board
+
+def handleTouch(b: Board, word: str, player: int):
+    # Set space visible
+    b.setVisibleFlag(word)

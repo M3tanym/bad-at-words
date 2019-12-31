@@ -9,6 +9,7 @@ import json
 from player import Player
 from logic import handleTouch
 from settings import VERSION
+from board import Board
 
 app = FastAPI()
 
@@ -22,6 +23,8 @@ players = []
 
 playerIdCount = 0
 
+b = None
+
 @app.on_event("startup")
 async def startup_event():
     global words
@@ -30,6 +33,9 @@ async def startup_event():
 
     global roundWords 
     roundWords = get_sample()
+
+    global b
+    b = Board(roundWords)
 
 @app.get("/")
 async def get():
@@ -49,15 +55,9 @@ async def websocket_endpoint(websocket: WebSocket):
     players.append(Player("name", playerIdCount, "red"))
     playerIdCount += 1
 
-    # send random sample of words on startup
-    global roundWords
-    wordDict = roundWords
-    response = {
-        "type" : "update",
-        "words" : wordDict
-    }
-    r = json.dumps(response)
-    await websocket.send_text(str(r))
+    # send board json on start
+    global b
+    await websocket.send_text(b.toJson)
 
     # Loop to handle all subsequent requets
     while True:
@@ -73,7 +73,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 def handleMessage(data):
     """
-    handles different json messages from websocket
+    handles different json messages from websocket connection
     
     Arguments:
         data {json} -- json message from client
@@ -81,20 +81,23 @@ def handleMessage(data):
     r = json.loads(data)
     rType = r["type"]
 
+    global b
+
+    # Handles a word being touched
     if rType == "touch":
         """
         {
             type : "touch",
             word : word,
-            player : id,
+            player : id
         }
         """
         rWord = str(r["word"])
         # player id
         rPlayer = int(r["player"])
 
-        # HANDLE THE LOGIC HERE
-        # handleTouch(rWord, rPlayer)
+        # the logic for a touch
+        handleTouch(b, rWord, rPlayer)
 
         # return reponse to client?
         return None
