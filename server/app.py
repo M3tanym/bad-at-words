@@ -70,7 +70,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await websocket.send_text(json.dumps(r))
     playerIdCount += 1
-    
+
 
     # Loop to handle all subsequent requests
     while True:
@@ -135,7 +135,7 @@ async def handleMessage(data):
             await turnLogic(True)
         else:
             await turnLogic()
-        
+
         # return reponse to client?
         return None
     # Start game message
@@ -176,11 +176,10 @@ async def handleMessage(data):
         rID = int(r["player"])
         teamTurn = RED if turn is False else BLUE
 
-        global players
         for p in players:
             if p.role == GUESSPLAYER and p.color == teamTurn:
                 print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
-                
+
                 # force team change
                 await turnLogic(True)
                 return None
