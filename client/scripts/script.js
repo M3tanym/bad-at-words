@@ -23,11 +23,11 @@ function initializeSocket() {
 
 function receiveMessage(msg) {
   // receiveMessage is called when any message from the server arrives on the WebSocket
-  // console.log(msg);
-  var r = JSON.parse(msg);
-  if(r.type == "test") {
-    alert("test!");
-  }
+  console.log("recieved: " + msg);
+  // var r = JSON.parse(msg);
+  // if (r.type == "test") {
+  //   alert("test!");
+  // }
 }
 
 function sendMessage(msg) {
@@ -41,10 +41,13 @@ function beginSocket() {
 
 function endSocket() {
   // ask the user to reload the page if the socket is lost
-  if(confirm("Lost connection to server. Reload page?"))
-  {
+  if (confirm("Lost connection to server. Reload page?")) {
     location.reload(true);
   }
+}
+
+function beginSocket() {
+  // empty begin handler
 }
 
 function initializeEvents() {
