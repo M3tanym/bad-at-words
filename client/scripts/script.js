@@ -125,7 +125,7 @@ function initializeEvents() {
   guesser.addEventListener("click", function() {
     codemaster.classList.remove("selected");
     guesser.classList.add("selected");
-    setRole("role", "guesser");
+    setTeamRole("role", "guesser");
   });
   let start = document.getElementById("start");
   start.addEventListener("click", startGame);
