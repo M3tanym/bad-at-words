@@ -24,6 +24,9 @@ players = []
 sockets = [] # store sockets for broadcasting message
 
 playerIdCount = 0
+turn = False # false is red, true is blue
+defaultNumTouches = 2
+numTouches = defaultNumTouches # TODO: sad, default for number of touches
 
 b = None
 
@@ -95,6 +98,8 @@ async def handleMessage(data):
     global b
     global players
     global sockets
+    global numTouches
+    global turn
 
 
     #  Handles a word being touched
@@ -109,14 +114,21 @@ async def handleMessage(data):
         rWord = str(r["word"])
         # player id
         rPlayer = int(r["player"])
+        numTouches == numTouches - 1
 
         print("INFO - handling a touch event for '{w}'".format(w = rWord))
+        print("INFO - team {c} has {n} touches left".format(c = RED if turn is False else BLUE, n = numTouches))
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
         msg = b.toJson()
         await broadcast(sockets, msg)
 
+        # TODO: check win condition
+
+        # check turn change
+        turnLogic()
+        
         # return reponse to client?
         return None
     # Start game message
@@ -152,6 +164,22 @@ async def handleMessage(data):
 
     else:
         print("ERROR - Case may not be handled yet")
+
+
+def turnLogic():
+    """
+    Function that handles turn changing and touches
+    """
+
+    global numTouches
+    global defaultNumTouches
+    global turn
+
+    if numTouches < 1:
+            numTouches = defaultNumTouches
+            turn = not turn
+
+    print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 
 
 def get_sample():
