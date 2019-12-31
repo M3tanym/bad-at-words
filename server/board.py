@@ -123,7 +123,7 @@ class Board:
 
     def getSpaceInfo(self, word: str):
         """
-        Returns the dictionary representation for the given word space
+        Returns the representation for the given word space
         
         Arguments:
             word {str} -- the word to look for
@@ -131,10 +131,10 @@ class Board:
 
         for s in self.spaces:
             if s.word == word:
-                return s.toDict()
+                return s
 
-    def checkWin():
-        firstTeam = False # make red default first team
+    #def checkWin(self):
+    #    firstTeam = False # make red default first team
 
 
 

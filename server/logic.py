@@ -12,22 +12,17 @@ def handleTouch(b: Board, word: str, player: int):
     
 def handleTeamChange(players, rID: int, rValue: str):
     for p in players:
-        if p.id is rID:
-            print(p)
+        if p.id == rID:
             p.color = rValue
-            print(p)
 
 
 def handleRoleChange(players, rID: int, rValue: str):
     for p in players:
-        if p.id is rID:
-            print(p)
+        if p.id == rID:
             p.role = rValue
-            print(p)
+
 
 def handleNameChange(players, rID: int, rValue: str):
     for p in players:
-        if p.id is rID:
-            print(p)
+        if p.id == rID:
             p.name = rValue
-            print(p)

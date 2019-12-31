@@ -126,8 +126,15 @@ async def handleMessage(data):
 
         # TODO: check win condition
 
-        # check turn change
-        turnLogic()
+
+        # Check if incorrect guess switches teams
+        space = b.getSpaceInfo(rWord)
+        teamTurn = RED if turn is False else BLUE
+
+        if space.color != teamTurn:
+            await turnLogic(True)
+        else:
+            await turnLogic()
         
         # return reponse to client?
         return None
@@ -169,13 +176,12 @@ async def handleMessage(data):
         print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
         
         # force team change
-        numTouches = 0
-        turnLogic()
+        await turnLogic(True)
     else:
         print("ERROR - Case may not be handled yet")
 
 
-async def turnLogic():
+async def turnLogic(forceTurnChange = False):
     """
     Function that handles turn changing and touches
     """
@@ -185,22 +191,25 @@ async def turnLogic():
     global turn
     global sockets
 
-    if numTouches < 1:
+    if forceTurnChange:
+        print("INFO - the teams have been FORCED to change")
+
+    if numTouches < 1 or forceTurnChange:
             numTouches = defaultNumTouches
             turn = not turn
+            print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 
     teamVal = RED if turn is False else BLUE
 
     r = {
         "type" : "turn",
-        "team" : teamVal
+        "team" : teamVal,
+        "touches" : numTouches
     }
 
     # broadcast turn change to everyone
     msg = json.dumps(r)
     broadcast(sockets, msg)
-
-    print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 
 
 def get_sample():
