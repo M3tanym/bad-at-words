@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket
 
@@ -11,6 +12,8 @@ app.mount("/client", StaticFiles(directory="../client"), name="client")
 
 @app.get("/")
 async def get():
+    response = RedirectResponse(url='/client/index.html')
+    return response
     return {"Welcome" : "The Game by Timothy Ford and Ben Gillett"}
 
 @app.get("/version")
