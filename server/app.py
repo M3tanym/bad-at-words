@@ -1,7 +1,8 @@
-from fastapi import FastAPI
-from starlette.responses import RedirectResponse
-from starlette.staticfiles import StaticFiles
-from starlette.websockets import WebSocket
+from random import sample # random samples
+from fastapi import FastAPI # fastAPI
+from starlette.responses import RedirectResponse # for redirecting root
+from starlette.staticfiles import StaticFiles # serve static files
+from starlette.websockets import WebSocket # host websockets
 
 
 VERSION = 0.1
@@ -9,6 +10,18 @@ VERSION = 0.1
 app = FastAPI()
 
 app.mount("/client", StaticFiles(directory="../client"), name="client")
+
+words = []
+
+def get_sample():
+    return sample(words, 25)
+
+@app.on_event("startup")
+async def startup_event():
+    global words
+    with open("words.txt") as word_file:
+        words = word_file.read().splitlines()
+        print(get_sample())
 
 @app.get("/")
 async def get():
