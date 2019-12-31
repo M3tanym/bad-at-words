@@ -23,7 +23,6 @@ async def startup_event():
     global words
     with open("words.txt") as word_file:
         words = word_file.read().splitlines()
-        print(get_sample())
 
 @app.get("/")
 async def get():
