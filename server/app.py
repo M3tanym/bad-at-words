@@ -5,6 +5,7 @@ from starlette.staticfiles import StaticFiles # serve static files
 from starlette.websockets import WebSocket # host websockets
 
 import json
+from pprint import pprint
 
 from player import Player
 from logic import handleTouch, handleTeamChange, handleRoleChange
@@ -79,7 +80,6 @@ async def websocket_endpoint(websocket: WebSocket):
         if r is not None:
             await websocket.send_text(r)
 
-
 async def handleMessage(data):
     """
     handles different json messages from websocket connection
@@ -95,6 +95,7 @@ async def handleMessage(data):
     global b
     global players
     global sockets
+
 
     #  Handles a word being touched
     if rType == "touch":
@@ -113,6 +114,8 @@ async def handleMessage(data):
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
+        msg = b.toJson()
+        await broadcast(sockets, msg)
 
         # return reponse to client?
         return None
@@ -146,6 +149,7 @@ async def handleMessage(data):
             handleRoleChange(players, rID, rValue)
         else:
             print("ERROR - set with incorrect `which` value")
+
     else:
         print("ERROR - Case may not be handled yet")
 
@@ -168,5 +172,8 @@ async def broadcast(socketList: WebSocket, message: str):
         socketList {List: [websockets]} -- list of all active websockets
         message {str} -- json message to send
     """
-    for s in socketList:
-        await s.send_text(message)
+    for i in range(len(socketList) - 1, -1, -1):
+        try:
+            await socketList[i].send_text(message)
+        except:
+            socketList.pop(i)
