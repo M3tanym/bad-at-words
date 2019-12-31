@@ -38,11 +38,10 @@ async def version():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
 
-    words = ["barry", "juice", "nuts"]
-    wordDict = Convert(words)
+    wordDict = Convert(get_sample())
 
-    response = { 
-        "type" : "update", 
+    response = {
+        "type" : "update",
         "words" : wordDict
     }
 
@@ -56,6 +55,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 
-def Convert(lst): 
-    res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)} 
-    return res_dct 
+def Convert(lst):
+    res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
+    return res_dct
