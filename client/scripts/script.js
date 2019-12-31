@@ -12,7 +12,7 @@ let dataElements = [];
 let ws;
 
 // player id
-let PLAYERID = "bagel";
+let PLAYERID = 42;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -57,11 +57,11 @@ function processCommand(r) {
     case "id":
       PLAYERID = r.id;
     break;
-    case "update":
-      updateBoard(r.words);
+    case "board":
+      updateBoard(r.spaces);
     break;
     default:
-      console.err("unknown command " + r);
+      console.log("unknown command " + r.type);
   }
 }
 
@@ -74,12 +74,18 @@ function updateBoard(words) {
   while (j < words.length) {
     let tr = document.createElement("tr");
     for (let i = 0; i < 5; i++) {
+      let w = words[j]
       let td = document.createElement("td");
       let outer = document.createElement("div");
       let inner = document.createElement("div");
       inner.classList.add("content");
-      inner.classList.add("white");
-      inner.innerText = words[j];
+      if (w.visible) {
+        inner.classList.add(w.color);
+      }
+      else {
+        inner.classList.add("white");
+      }
+      inner.innerText = w.word;
       outer.classList.add("box");
       outer.appendChild(inner);
       td.appendChild(outer);
@@ -95,8 +101,8 @@ function updateBoard(words) {
 function touchWord(e) {
   let msg = {
     type: "touch",
-    id: PLAYERID,
-    text: e.target.innerText
+    player: PLAYERID,
+    word: e.target.innerText
   };
   sendMessage(msg);
 }
@@ -134,7 +140,7 @@ function initializeEvents() {
 function setTeamRole(which, value) {
   let msg = {
     type: "set",
-    id: PLAYERID,
+    player: PLAYERID,
     which: which,
     value: value
   };
@@ -144,7 +150,7 @@ function setTeamRole(which, value) {
 function startGame() {
   let msg = {
     type: "start",
-    id: PLAYERID
+    player: PLAYERID
   };
   sendMessage(msg);
 }

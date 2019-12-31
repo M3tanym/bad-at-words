@@ -71,7 +71,6 @@ async def websocket_endpoint(websocket: WebSocket):
         if r is not None:
             await websocket.send_text(r)
 
-
 async def handleMessage(data):
     """
     handles different json messages from websocket connection
@@ -115,7 +114,7 @@ async def handleMessage(data):
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)
-        return None 
+        return None
     else:
         print("Case may not be handled yet")
 
@@ -156,5 +155,8 @@ async def broadcast(socketList: WebSocket, message: str):
         socketList {List: [websockets]} -- list of all active websockets
         message {str} -- json message to send
     """
-    for s in socketList:
-        await s.send_text(message)
+    for i in range(len(socketList) - 1, -1, -1):
+        try:
+            await socketList[i].send_text(message)
+        except:
+            socketList.pop(i)
