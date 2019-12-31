@@ -72,7 +72,7 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text(r)
 
 
-def handleMessage(data):
+async def handleMessage(data):
     """
     handles different json messages from websocket connection
 
@@ -114,7 +114,7 @@ def handleMessage(data):
 
         # send the board to everyone on start
         msg = b.toJson()
-        broadcast(sockets, msg)
+        await broadcast(sockets, msg)
     else:
         print("Case may not be handled yet")
 
@@ -147,7 +147,7 @@ def get_sample():
     return sample(words, 25)
 
 
-def broadcast(socketList: WebSocket, message: str):
+async def broadcast(socketList: WebSocket, message: str):
     """
     Broadcasts the same message across all sockets
 
@@ -156,4 +156,4 @@ def broadcast(socketList: WebSocket, message: str):
         message {str} -- json message to send
     """
     for s in socketList:
-        s.send_text(message)
+        await s.send_text(message)
