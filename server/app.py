@@ -71,6 +71,17 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.send_text(json.dumps(r))
     playerIdCount += 1
 
+    # initialize turn
+    global turn
+    global numTouches
+    teamVal = RED if turn is False else BLUE
+    r = {
+        "type" : "turn",
+        "team" : teamVal,
+        "touches" : numTouches
+    }
+    msg = json.dumps(r)
+    await broadcast(sockets, msg)
 
     # Loop to handle all subsequent requests
     while True:
@@ -218,7 +229,7 @@ async def turnLogic(forceTurnChange = False):
 
     # broadcast turn change to everyone
     msg = json.dumps(r)
-    broadcast(sockets, msg)
+    await broadcast(sockets, msg)
 
 
 def get_sample():
