@@ -4,6 +4,8 @@ from starlette.responses import RedirectResponse # for redirecting root
 from starlette.staticfiles import StaticFiles # serve static files
 from starlette.websockets import WebSocket # host websockets
 
+import json
+
 
 VERSION = 0.1
 
@@ -35,6 +37,25 @@ async def version():
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+
+    words = ["barry", "juice", "nuts"]
+    wordDict = Convert(words)
+
+    response = { 
+        "type" : "update", 
+        "words" : wordDict
+    }
+
+    r = json.dumps(response)
+    await websocket.send_text(str(r))
+
+
     while True:
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
+
+
+
+def Convert(lst): 
+    res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)} 
+    return res_dct 
