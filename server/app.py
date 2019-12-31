@@ -5,6 +5,7 @@ from starlette.staticfiles import StaticFiles # serve static files
 from starlette.websockets import WebSocket # host websockets
 
 import json
+from pprint import pprint
 
 from player import Player
 from logic import handleTouch
@@ -82,6 +83,8 @@ async def handleMessage(data):
     rType = r["type"]
 
     global b
+    global sockets
+
 
     #  Handles a word being touched
     if rType == "touch":
@@ -98,6 +101,8 @@ async def handleMessage(data):
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
+        msg = b.toJson()
+        await broadcast(sockets, msg)
 
         # return reponse to client?
         return None
@@ -109,8 +114,6 @@ async def handleMessage(data):
             player : "id"
         }
         """
-        global sockets
-
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)

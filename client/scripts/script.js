@@ -67,8 +67,11 @@ function processCommand(r) {
 
 function updateBoard(words) {
   let setup = document.getElementById("setup");
-  setup.parentNode.removeChild(setup);
+  setup.classList.add("hidden");
   let container = document.getElementById("table_container");
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
   let table = document.createElement("table");
   let j = 0;
   while (j < words.length) {
