@@ -173,10 +173,20 @@ async def handleMessage(data):
             print("ERROR - set with incorrect `which` value")
     elif rType == "pass":
         # end the turn
-        print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
-        
-        # force team change
-        await turnLogic(True)
+        rID = int(r["player"])
+        teamTurn = RED if turn is False else BLUE
+
+        global players
+        for p in players:
+            if p.role == GUESSPLAYER and p.color == teamTurn:
+                print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
+                
+                # force team change
+                await turnLogic(True)
+                return None
+
+        print("WARNING - player from wrong team requested pass")
+
     else:
         print("ERROR - Case may not be handled yet")
 
