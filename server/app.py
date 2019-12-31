@@ -14,7 +14,6 @@ app.mount("/client", StaticFiles(directory="../client"), name="client")
 async def get():
     response = RedirectResponse(url='/client/index.html')
     return response
-    return {"Welcome" : "The Game by Timothy Ford and Ben Gillett"}
 
 @app.get("/version")
 async def version():
