@@ -8,8 +8,8 @@ import json
 from pprint import pprint
 
 from player import Player
-from logic import handleTouch
-from settings import VERSION
+from logic import handleTouch, handleTeamChange, handleRoleChange
+from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER
 from board import Board
 
 app = FastAPI()
@@ -58,10 +58,18 @@ async def websocket_endpoint(websocket: WebSocket):
 
     # new player gets created on new websocket
     global playerIdCount, players
-    players.append(Player("name", playerIdCount, "red"))
-    playerIdCount += 1
+    players.append(Player("name", playerIdCount, RED, GUESSPLAYER))
 
-    # Loop to handle all subsequent requets
+    r = {
+        "type" : "playerid",
+        "value" : playerIdCount
+    }
+
+    await websocket.send_text(json.dumps(r))
+    playerIdCount += 1
+    
+
+    # Loop to handle all subsequent requests
     while True:
         # receive json message from client
         data = await websocket.receive_text()
@@ -82,7 +90,10 @@ async def handleMessage(data):
     r = json.loads(data)
     rType = r["type"]
 
+    print("INFO - received request of type [{t}]".format(t = rType))
+
     global b
+    global players
     global sockets
 
 
@@ -99,6 +110,8 @@ async def handleMessage(data):
         # player id
         rPlayer = int(r["player"])
 
+        print("INFO - handling a touch event for '{w}'".format(w = rWord))
+
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
         msg = b.toJson()
@@ -114,30 +127,31 @@ async def handleMessage(data):
             player : "id"
         }
         """
+
+        print("INFO - starting the game with {n} players".format(n = len(players)))
+
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)
         return None
+    elif rType == "set":
+        rWhich = str(r["which"])
+        rID = int(r["player"])
+        rValue = str(r["value"])
+
+        print("INFO - setting {w} for player {p} as {v}".format(w = rWhich, p = rID, v = rValue))
+
+        # change the team
+        if rWhich is "team":
+            handleTeamChange(players, rID, rValue)
+        # change the role
+        elif rWhich is "role":
+            handleRoleChange(players, rID, rValue)
+        else:
+            print("ERROR - set with incorrect `which` value")
+
     else:
-        print("Case may not be handled yet")
-
-'''
-    # Set team
-    """
-    {
-        player : id,
-        team : "team"
-    }
-    """
-
-    # Set role
-    """
-    {
-        player : id,
-        type : "touch"
-    }
-    """
-'''
+        print("ERROR - Case may not be handled yet")
 
 
 def get_sample():

@@ -131,3 +131,9 @@ if __name__ == "__main__":
 
     # Serialize the board to a json message
     pprint(b.toJson())
+
+    b.setVisibleFlag("income")
+
+    print("\n\n\n")
+
+    pprint(b.toJson())
