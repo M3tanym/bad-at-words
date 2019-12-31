@@ -3,13 +3,19 @@ from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket
 
 
-app = FastAPI()
-
-app.mount("/", StaticFiles(directory="../client"), name="index.html")
-
-
 VERSION = 0.1
 
+app = FastAPI()
+
+app.mount("/client", StaticFiles(directory="../client"), name="client")
+
+@app.get("/")
+async def get():
+    return {"Welcome" : "The Game by Timothy Ford and Ben Gillett"}
+
+@app.get("/version")
+async def version():
+    return {"Version" : VERSION}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -17,12 +23,3 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
-
-
-@app.get("/")
-def root():
-    return {"Welcome" : "The Game by Timothy Ford and Ben Gillett"}
-
-@app.get("/version")
-def version():
-    return {"Version" : VERSION}

@@ -3,7 +3,6 @@ function init() {
   // call these routines when the page has finished loading
   initializeEvents();
   initializeSocket();
-  sendMessage("hello!");
 }
 
 // global for all the input elements for probe data
@@ -24,11 +23,11 @@ function initializeSocket() {
 
 function receiveMessage(msg) {
   // receiveMessage is called when any message from the server arrives on the WebSocket
-  // console.log(msg);
-  var r = JSON.parse(msg);
-  if (r.type == "test") {
-    alert("test!");
-  }
+  console.log("recieved: " + msg);
+  // var r = JSON.parse(msg);
+  // if (r.type == "test") {
+  //   alert("test!");
+  // }
 }
 
 function sendMessage(msg) {
