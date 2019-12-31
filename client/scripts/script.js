@@ -35,6 +35,10 @@ function sendMessage(msg) {
   ws.send(msg);
 }
 
+function beginSocket() {
+  // handler for socket open
+}
+
 function endSocket() {
   // ask the user to reload the page if the socket is lost
   if(confirm("Lost connection to server. Reload page?"))
