@@ -7,8 +7,8 @@ from starlette.websockets import WebSocket # host websockets
 import json
 
 from player import Player
-from logic import handleTouch
-from settings import VERSION
+from logic import handleTouch, handleTeamChange, handleRoleChange
+from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER
 from board import Board
 
 app = FastAPI()
@@ -57,10 +57,18 @@ async def websocket_endpoint(websocket: WebSocket):
 
     # new player gets created on new websocket
     global playerIdCount, players
-    players.append(Player("name", playerIdCount, "red"))
-    playerIdCount += 1
+    players.append(Player("name", playerIdCount, RED, GUESSPLAYER))
 
-    # Loop to handle all subsequent requets
+    r = {
+        "type" : "playerid",
+        "value" : playerIdCount
+    }
+
+    await websocket.send_text(json.dumps(r))
+    playerIdCount += 1
+    
+
+    # Loop to handle all subsequent requests
     while True:
         # receive json message from client
         data = await websocket.receive_text()
@@ -83,9 +91,11 @@ async def handleMessage(data):
     rType = r["type"]
 
     global b
+    global players
+    global sockets
 
     #  Handles a word being touched
-    if rType == "touch":
+    if rType is "touch":
         """
         {
             type : "touch",
@@ -103,39 +113,33 @@ async def handleMessage(data):
         # return reponse to client?
         return None
     # Start game message
-    elif rType == "start":
+    elif rType is "start":
         """
         {
             type : "start"
             player : "id"
         }
         """
-        global sockets
 
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)
-        return None 
+        return None
+    elif rType is "set":
+        rWhich = str(r["which"])
+        rID = int(r["player"])
+        rValue = str(r["value"])
+
+        # change the team
+        if rWhich is "team":
+            handleTeamChange(players, rID, rValue)
+        # change the role
+        elif rWhich is "role":
+            handleRoleChange(players, rID, rValue)
+        else:
+            print("ERROR - set with incorrect `which` value")
     else:
-        print("Case may not be handled yet")
-
-'''
-    # Set team
-    """
-    {
-        player : id,
-        team : "team"
-    }
-    """
-
-    # Set role
-    """
-    {
-        player : id,
-        type : "touch"
-    }
-    """
-'''
+        print("ERROR - Case may not be handled yet")
 
 
 def get_sample():
