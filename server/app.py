@@ -37,7 +37,7 @@ async def version():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
 
-    wordDict = Convert(get_sample())
+    wordDict = get_sample()
 
     response = {
         "type" : "update",
