@@ -8,10 +8,52 @@
 
 .fancy {
     font-family: 'Tangerine', serif;
-    font-size: 3em;
+    font-size: 4em;
     color: black;
 }
 
 .hidden {
   display: none;
+}
+
+html {
+  padding: 10px;
+}
+
+#header {
+  text-align: center;
+  padding: 2em;
+}
+
+#tableContainer {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  width: 20%;
+  padding: 5px;
+}
+
+div .box {
+  display:table;
+  text-align:center;
+  width: 100%;
+  height: 70px;
+}
+
+td .content {
+  font-family: 'Tangerine', serif;
+  font-size: 40px;
+  padding: 5px;
+  color: black;
+  background: tan;
+  display: table-cell;
+  vertical-align: middle;
+  border-radius: 5px;
 }

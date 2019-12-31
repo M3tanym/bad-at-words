@@ -24,10 +24,33 @@ function initializeSocket() {
 function receiveMessage(msg) {
   // receiveMessage is called when any message from the server arrives on the WebSocket
   console.log("recieved: " + msg);
-  // var r = JSON.parse(msg);
-  // if (r.type == "test") {
-  //   alert("test!");
-  // }
+  var r = JSON.parse(msg);
+  if (r.type === "test") {
+    alert("test!");
+  }
+  else if (r.type === "update") {
+    var container = document.getElementById("tableContainer");
+    var table = document.createElement("table");
+    let j = r.words.length;
+    console.log(j);
+    while (j > 0) {
+      var tr = document.createElement("tr");
+      for (var i = 0; i < 5; i++) {
+        var td = document.createElement("td");
+        var outer = document.createElement("div");
+        var inner = document.createElement("div");
+        inner.classList.add("content");
+        inner.innerText = r.words[j];
+        outer.classList.add("box");
+        outer.appendChild(inner);
+        td.appendChild(outer);
+        tr.appendChild(td);
+        j--;
+      }
+      table.appendChild(tr);
+    }
+    container.appendChild(table);
+  }
 }
 
 function sendMessage(msg) {
