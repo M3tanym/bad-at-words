@@ -65,7 +65,7 @@ async def websocket_endpoint(websocket: WebSocket):
         # receive json message from client
         data = await websocket.receive_text()
 
-        r = handleMessage(data)
+        r = await handleMessage(data)
 
         # if reponse generated, send response
         if r is not None:
@@ -115,6 +115,7 @@ async def handleMessage(data):
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)
+        return None 
     else:
         print("Case may not be handled yet")
 
