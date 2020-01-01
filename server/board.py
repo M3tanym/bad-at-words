@@ -10,7 +10,7 @@ from settings import RED, BLUE, BLACK, WHITE
 
 class Space:
     """
-    A space has a color and a word
+    A space has a color and a word and a visibility flag
     """
     color: str = None
     word: str = None
