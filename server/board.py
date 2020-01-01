@@ -120,6 +120,19 @@ class Board:
         for s in self.spaces:
             if s.word == word:
                 s.visible = True
+    
+    def removeVisibleFlag(self, word: str):
+        """
+        Given a word, change that spaces visible flag to False
+
+        Arguments:
+            word {str} -- the word
+        """
+
+        # TODO: I know this isn't optimal but I don't know what is
+        for s in self.spaces:
+            if s.word == word:
+                s.visible = False
 
     def getSpaceInfo(self, word: str):
         """
@@ -162,6 +175,9 @@ class Board:
         # 3 signifies the Blue team victory
         if blueCount >= 8:
             return 3
+        
+        # return 0 on no winning condition
+        return 0 
 
 
 
@@ -185,18 +201,50 @@ if __name__ == "__main__":
     
     winVal = b.checkWin()
     print("ASSERT {v} == -1".format(v = winVal))
-
+    for s in b.spaces:
+        if s.color == BLACK:
+            b.removeVisibleFlag(s.word)
 
 
     print("____TEST RED WIN____")
-    b1 = Board(test)
-    for s in b1.spaces:
+    for s in b.spaces:
         if s.color == RED:
-            b1.setVisibleFlag(s.word)
+            b.setVisibleFlag(s.word)
     
-    winVal = b1.checkWin()
+    winVal = b.checkWin()
     print("ASSERT {v} == 2".format(v = winVal))
+    for s in b.spaces:
+        if s.color == RED:
+            b.removeVisibleFlag(s.word)
 
+    
+    print("____TEST BLUE WIN____")
+    for s in b.spaces:
+        if s.color == BLUE:
+            b.setVisibleFlag(s.word)
+    
+    winVal = b.checkWin()
+    print("ASSERT {v} == 3".format(v = winVal))
+    for s in b.spaces:
+        if s.color == BLUE:
+            b.removeVisibleFlag(s.word)
 
-    #print("\n\n\n")
-    #pprint(b.toJson())
+    
+    print("____TEST NO WIN____")
+    count = 0
+    cap = 5
+    for s in b.spaces:
+        if s.color == RED and count < cap:
+            b.setVisibleFlag(s.word)
+            count += 1
+        if s.color == BLUE and count < cap:
+            b.setVisibleFlag(s.word)
+            count += 1
+    
+    winVal = b.checkWin()
+    print("ASSERT {v} == 0".format(v = winVal))
+    for s in b.spaces:
+        if s.color == RED:
+            b.removeVisibleFlag(s.word)
+        if s.color == BLUE:
+            b.removeVisibleFlag(s.word)

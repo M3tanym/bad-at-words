@@ -149,7 +149,6 @@ async def handleMessage(data):
             "word" : rWord
         }
         msg = json.dumps(r)
-        # msg = b.toJson()
 
         await broadcast(sockets, msg)
 
