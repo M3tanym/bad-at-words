@@ -192,6 +192,12 @@ async def handleMessage(data):
         teamTurn = RED if turn is False else BLUE
 
         for p in players:
+            if p.id == rID:
+                if p.color != teamTurn:
+                    print("WARNING - player from wrong team tried to pass")
+                    return
+
+        for p in players:
             if p.role == GUESSPLAYER and p.color == teamTurn:
                 print("INFO - team {c} has elected to pass".format(c = RED if turn is False else BLUE))
 
@@ -200,7 +206,10 @@ async def handleMessage(data):
                 return None
 
         print("WARNING - player from wrong team requested pass")
-
+    elif rType == "submit":
+        rTouchCount = int(r["value"])
+        defaultNumTouches = rTouchCount
+        numTouches = defaultNumTouches
     else:
         print("ERROR - Case may not be handled yet")
 
