@@ -189,14 +189,18 @@ div .box {
 
 td .content {
   font-family: 'Indie Flower', serif;
-  font-size: 3vw;
+  font-size: 3.1vw;
   height: 5vw;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 5px;
   padding-right: 5px;
-  color: black;
   display: table-cell;
   vertical-align: middle;
   border-radius: 5px;
+  transition: background 1s, color 5s;
+}
+
+.invis {
+  color: transparent;
 }

@@ -6,14 +6,15 @@ function init() {
 }
 
 // global for all the input elements for probe data
-let dataElements = [];
+var dataElements = [];
 
-// global letiable for the WebSocket
-let ws;
+// global variable for the WebSocket
+var ws;
 
 // player id
-let PLAYERID = 42;
-let ROLE;
+var PLAYERID = 42;
+var ROLE;
+var words = [];
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -28,13 +29,13 @@ function initializeSocket() {
 function receiveMessage(msg) {
   // receiveMessage is called when any message from the server arrives on the WebSocket
   console.log("recieved: " + msg);
-  let r = JSON.parse(msg);
+  var r = JSON.parse(msg);
   processCommand(r);
 }
 
 function sendMessage(msg) {
   // simple send
-  let m = JSON.stringify(msg);
+  var m = JSON.stringify(msg);
   console.log("sending: " + m)
   ws.send(m);
 }
@@ -59,7 +60,11 @@ function processCommand(r) {
       PLAYERID = r.value;
     break;
     case "board":
-      updateBoard(r.spaces);
+      words = r.spaces;
+      updateBoard();
+    break;
+    case "visible":
+      makeVisible(r.word);
     break;
     case "turn":
       setTurn(r);
@@ -69,24 +74,34 @@ function processCommand(r) {
   }
 }
 
-function updateBoard(words) {
-  let setup = document.getElementById("setup");
+function makeVisible(word) {
+  var w = document.getElementById("_" + word + "_");
+  w.className = "";
+  w.classList.add("content");
+  w.classList.add(w.name);
+  w.classList.add("invis");
+}
+
+function updateBoard() {
+  var setup = document.getElementById("setup");
   setup.classList.add("hidden");
-  let container = document.getElementById("table_container");
+  var container = document.getElementById("table_container");
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
-  let table = document.createElement("table");
-  let j = 0;
+  var table = document.createElement("table");
+  var j = 0;
   while (j < words.length) {
-    let tr = document.createElement("tr");
-    for (let i = 0; i < 5; i++) {
-      let w = words[j]
-      let td = document.createElement("td");
-      let outer = document.createElement("div");
-      let inner = document.createElement("div");
+    var tr = document.createElement("tr");
+    for (var i = 0; i < 5; i++) {
+      var w = words[j]
+      var td = document.createElement("td");
+      var outer = document.createElement("div");
+      var inner = document.createElement("div");
       inner.classList.add("content");
-      inner.innerText = "\xa0";
+      inner.id = "_" + w.word + "_";
+      inner.innerText = w.word;
+      inner.name = w.color;
       if (ROLE == "codemaster" || w.visible) {
         inner.classList.add(w.color);
       }
@@ -94,9 +109,9 @@ function updateBoard(words) {
         inner.classList.add("white");
         inner.addEventListener("click", touchWord);
       }
-      
-      if (!w.visible) {
-        inner.innerText = w.word;
+
+      if (w.visible) {
+        inner.classList.add("invis");
       }
 
       outer.classList.add("box");
@@ -108,16 +123,16 @@ function updateBoard(words) {
     table.appendChild(tr);
   }
   container.appendChild(table);
-  let pass_container = document.getElementById("pass_container");
+  var pass_container = document.getElementById("pass_container");
   pass_container.className = "";
   if (ROLE == "codemaster") {
-    let guess_container = document.getElementById("guess_container");
+    var guess_container = document.getElementById("guess_container");
     guess_container.className = "";
   }
 }
 
 function touchWord(e) {
-  let msg = {
+  var msg = {
     type: "touch",
     player: PLAYERID,
     word: e.target.innerText
@@ -126,7 +141,7 @@ function touchWord(e) {
 }
 
 function passTurn() {
-  let msg = {
+  var msg = {
     type: "pass",
     player: PLAYERID,
   };
@@ -135,10 +150,10 @@ function passTurn() {
 
 function initializeEvents() {
   // Set up the event handlers
-  let red = document.getElementById("pick_red");
-  let blue = document.getElementById("pick_blue");
-  let codemaster = document.getElementById("pick_codemaster");
-  let guesser = document.getElementById("pick_guesser");
+  var red = document.getElementById("pick_red");
+  var blue = document.getElementById("pick_blue");
+  var codemaster = document.getElementById("pick_codemaster");
+  var guesser = document.getElementById("pick_guesser");
   red.addEventListener("click", function() {
     red.classList.add("selected");
     blue.classList.remove("selected");
@@ -160,36 +175,36 @@ function initializeEvents() {
     setTeamRole("role", "guesser");
   });
 
-  let start = document.getElementById("start");
+  var start = document.getElementById("start");
   start.addEventListener("click", startGame);
 
-  let name = document.getElementById("name");
+  var name = document.getElementById("name");
   name.addEventListener("change", function() {
     setName(name.value);
   });
 
-  let pass = document.getElementById("pass");
+  var pass = document.getElementById("pass");
   pass.addEventListener("click", passTurn);
 
-  let guess = document.getElementById("guess");
+  var guess = document.getElementById("guess");
   guess.addEventListener("click", function() {
-    let num = document.getElementById("number").value * 1;
+    var num = document.getElementById("number").value * 1;
     submitGuesses(num);
   });
 }
 
 function setTeamRole(which, value) {
   if (which == "role") {
-    let role_text = document.getElementById("role_text");
+    var role_text = document.getElementById("role_text");
     role_text.innerText = value;
     ROLE = value;
   }
   else {
-    let bar = document.getElementById("bar");
+    var bar = document.getElementById("bar");
     bar.className = "";
     bar.classList.add(value);
   }
-  let msg = {
+  var msg = {
     type: "set",
     player: PLAYERID,
     which: which,
@@ -199,9 +214,9 @@ function setTeamRole(which, value) {
 }
 
 function setName(name) {
-  let name_text = document.getElementById("name_text");
+  var name_text = document.getElementById("name_text");
   name_text.innerText = name;
-  let msg = {
+  var msg = {
     type: "set",
     player: PLAYERID,
     which: "name",
@@ -211,14 +226,14 @@ function setName(name) {
 }
 
 function setTurn(r) {
-  let turn = document.getElementById("turn");
+  var turn = document.getElementById("turn");
   turn.innerText = r.team + " turn - " + r.touches + " guesses left"
   turn.className = "";
   turn.classList.add(r.team);
 }
 
 function startGame() {
-  let msg = {
+  var msg = {
     type: "start",
     player: PLAYERID
   };
@@ -226,7 +241,7 @@ function startGame() {
 }
 
 function submitGuesses(v) {
-  let msg = {
+  var msg = {
     type: "submit",
     player: PLAYERID,
     value: v
