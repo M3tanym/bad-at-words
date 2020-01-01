@@ -9,7 +9,7 @@ from pprint import pprint
 
 from player import Player
 from logic import handleTouch, handleTeamChange, handleRoleChange, handleNameChange
-from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER
+from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER, AGENT_VICTORY, ASSASIN_VICTORY
 from board import Board
 
 app = FastAPI()
@@ -148,20 +148,55 @@ async def handleMessage(data):
             "type" : "visible",
             "word" : rWord
         }
-        msg = json.dumps(r)
 
+        msg = json.dumps(r)
         await broadcast(sockets, msg)
 
-        # TODO: check win condition
+        # check win condition
+        winVal = b.checkWin()
+        teamVal = BLUE if turn else RED # thanks ben
 
+        if winVal != 0:
+            winTeam = BLUE
+            victoryType = AGENT_VICTORY
+            
+            if winVal == 3:
+                # blue won
+                print("INFO - Blue team has won this match")
+                winTeam = BLUE
+                victoryType = AGENT_VICTORY
+            elif winVal == 2:
+                # blue won
+                print("INFO - Red team has won this match")
+                winTeam = RED
+                victoryType = AGENT_VICTORY
+            elif winVal == -1:
+                # Assasin
+                teamValInv = RED if BLUE else RED # invert the team
+                winTeam = teamValInv
+                victoryType = ASSASIN_VICTORY
+                print("INFO - {t} team has won this match by the assasin".format(t = teamValInv))
+            else:
+                print("ERROR - Invalid win value")
 
-        # Check if incorrect guess switches teams
-        space = b.getSpaceInfo(rWord)
+            
+            r = {
+                "type" : "win",
+                "team" : winTeam,
+                "method" : victoryType
+            }
 
-        if space.color != teamTurn:
-            await turnLogic(True)
+            msg = json.dumps(r)
+            await broadcast(sockets, msg)
+
         else:
-            await turnLogic()
+            # Check if incorrect guess switches teams
+            space = b.getSpaceInfo(rWord)
+
+            if space.color != teamTurn:
+                await turnLogic(True)
+            else:
+                await turnLogic()
 
         # return reponse to client?
         return None

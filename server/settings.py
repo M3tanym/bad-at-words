@@ -12,5 +12,10 @@ BLACK = "black"
 GUESSPLAYER = "guesser"
 CMPLAYER = "codemaster"
 
+# victory types
+AGENT_VICTORY = "agent"
+ASSASIN_VICTORY = "assasin"
+
+
 # version counter
 VERSION = 0.1
