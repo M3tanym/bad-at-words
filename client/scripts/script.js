@@ -70,7 +70,7 @@ function processCommand(r) {
       setTurn(r);
     break;
     case "win":
-      showWin(r.team);
+      showWin(r);
     break;
     default:
       console.log("unknown command " + r.type);
@@ -85,11 +85,14 @@ function makeVisible(word) {
   w.classList.add("invis");
 }
 
-function showWin(team) {
+function showWin(r) {
   var banner = document.getElementById("banner");
-  banner.innerText = team + " wins!"
+  var banner_text = document.getElementById("banner_text");
+  var banner_reason = document.getElementById("banner_reason");
+  banner_text.innerText = r.team + " wins!";
+  banner_reason.innerText = r.method;
   banner.className = "";
-  banner.classList.add(team);
+  banner.classList.add(r.team);
 }
 
 function updateBoard() {

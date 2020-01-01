@@ -50,10 +50,21 @@
   left: 0;
   z-index: 999;
   width: 100%;
-  padding: 50px 0px;
+  padding: 70px 0px;
   text-align: center;
+}
+
+#banner_text {
+  width: 100%;
   font-family: 'Press Start 2P', cursive;
   font-size: 8vw;
+}
+
+#banner_reason {
+  width: 100%;
+  margin-top: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 4vw;
 }
 
 #header {

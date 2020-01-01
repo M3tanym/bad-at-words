@@ -143,7 +143,7 @@ async def handleMessage(data):
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
-        
+
         r = {
             "type" : "visible",
             "word" : rWord
@@ -159,27 +159,27 @@ async def handleMessage(data):
         if winVal != 0:
             winTeam = BLUE
             victoryType = AGENT_VICTORY
-            
+
             if winVal == 3:
                 # blue won
                 print("INFO - Blue team has won this match")
                 winTeam = BLUE
                 victoryType = AGENT_VICTORY
             elif winVal == 2:
-                # blue won
+                # red won
                 print("INFO - Red team has won this match")
                 winTeam = RED
                 victoryType = AGENT_VICTORY
             elif winVal == -1:
                 # Assasin
-                teamValInv = RED if BLUE else RED # invert the team
+                teamValInv = RED if turn else BLUE # invert the team
                 winTeam = teamValInv
                 victoryType = ASSASIN_VICTORY
                 print("INFO - {t} team has won this match by the assasin".format(t = teamValInv))
             else:
                 print("ERROR - Invalid win value")
 
-            
+
             r = {
                 "type" : "win",
                 "team" : winTeam,
@@ -254,7 +254,7 @@ async def handleMessage(data):
         rTouchCount = int(r["value"])
         print("INFO - changing the number of touches")
 
-        
+
         defaultNumTouches = rTouchCount + 1
         numTouches = defaultNumTouches
 
