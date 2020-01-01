@@ -87,14 +87,18 @@ function updateBoard(words) {
       let inner = document.createElement("div");
       inner.classList.add("content");
       inner.innerText = "\xa0";
-      if (w.visible) {
+      if (ROLE == "codemaster" || w.visible) {
         inner.classList.add(w.color);
       }
-      else {
+      else  {
         inner.classList.add("white");
-        inner.innerText = w.word;
         inner.addEventListener("click", touchWord);
       }
+      
+      if (!w.visible) {
+        inner.innerText = w.word;
+      }
+
       outer.classList.add("box");
       outer.appendChild(inner);
       td.appendChild(outer);
