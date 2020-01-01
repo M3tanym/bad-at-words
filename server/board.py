@@ -6,7 +6,7 @@ import json
 import random
 from pprint import pprint
 
-from settings import RED, BLUE, BLACK, WHITE
+from settings import RED, BLUE, BLACK, WHITE, ASSASIN_VICTORY, AGENT_VICTORY
 
 class Space:
     """
