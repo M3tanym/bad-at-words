@@ -132,6 +132,9 @@ async def handleMessage(data):
                 if p.color != teamTurn:
                     print("WARNING - player from wrong team touched")
                     return
+                if p.role != GUESSPLAYER:
+                    print("WARNING - codemaster tried to touch")
+                    return
 
         numTouches = numTouches - 1
 
