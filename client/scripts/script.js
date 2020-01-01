@@ -13,6 +13,7 @@ let ws;
 
 // player id
 let PLAYERID = 42;
+let ROLE;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -105,6 +106,10 @@ function updateBoard(words) {
   container.appendChild(table);
   let pass_container = document.getElementById("pass_container");
   pass_container.className = "";
+  if (ROLE == "codemaster") {
+    let guess_container = document.getElementById("guess_container");
+    guess_container.className = "";
+  }
 }
 
 function touchWord(e) {
@@ -161,12 +166,18 @@ function initializeEvents() {
 
   let pass = document.getElementById("pass");
   pass.addEventListener("click", passTurn);
+
+  let guess = document.getElementById("guess");
+  guess.addEventListener("click", function() {
+    submitGuesses(document.getElementById("value").value);
+  });
 }
 
 function setTeamRole(which, value) {
   if (which == "role") {
     let role_text = document.getElementById("role_text");
     role_text.innerText = value;
+    ROLE = value;
   }
   else {
     let bar = document.getElementById("bar");
@@ -209,20 +220,14 @@ function startGame() {
   sendMessage(msg);
 }
 
-// xhr sample
-// function loadFields() {
-//   let xhr = new XMLHttpRequest();
-//   xhr.onreadystatechange = function()
-//   {
-//     if(this.readyState == 4 && this.status == 200)
-//     {
-//       let r = JSON.parse(xhr.responseText);
-//       addFields(r.values);
-//     }
-//   };
-//   xhr.open("GET", "v1/fields/", true);
-//   xhr.send();
-// }
+function submitGuesses(v) {
+  let msg = {
+    type: "submit",
+    player: PLAYERID,
+    value: v
+  };
+  sendMessage(msg);
+}
 
 // Page init
 window.addEventListener("load", init, false);
