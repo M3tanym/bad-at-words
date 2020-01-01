@@ -169,7 +169,8 @@ function initializeEvents() {
 
   let guess = document.getElementById("guess");
   guess.addEventListener("click", function() {
-    submitGuesses(document.getElementById("value").value);
+    let num = document.getElementById("number").value * 1;
+    submitGuesses(num);
   });
 }
 
