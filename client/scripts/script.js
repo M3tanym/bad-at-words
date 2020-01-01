@@ -69,6 +69,9 @@ function processCommand(r) {
     case "turn":
       setTurn(r);
     break;
+    case "win":
+      showWin(r.team);
+    break;
     default:
       console.log("unknown command " + r.type);
   }
@@ -80,6 +83,13 @@ function makeVisible(word) {
   w.classList.add("content");
   w.classList.add(w.name);
   w.classList.add("invis");
+}
+
+function showWin(team) {
+  var banner = document.getElementById("banner");
+  banner.innerText = team + " wins!"
+  banner.className = "";
+  banner.classList.add(team);
 }
 
 function updateBoard() {
