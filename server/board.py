@@ -133,8 +133,36 @@ class Board:
             if s.word == word:
                 return s
 
-    #def checkWin(self):
-    #    firstTeam = False # make red default first team
+    def checkWin(self):
+        firstTeam = False # make red default first team
+
+        redCount = 0
+        blueCount = 0
+        assasin = False
+
+        for s in self.spaces:
+            if s.visible == True:
+                if s.color == RED:
+                    redCount += 1
+                elif s.color == BLUE:
+                    blueCount += 1
+                elif s.color == BLACK:
+                    assasin = True
+        
+        # check if assasin is toggled
+        # -1 signifies the current team loses
+        if assasin:
+            return -1
+        
+        # all red agents found
+        # 2 signifies Red team victory
+        if redCount >= 9:
+            return 2
+        # all blue agents found
+        # 3 signifies the Blue team victory
+        if blueCount >= 8:
+            return 3
+
 
 
 
@@ -147,10 +175,28 @@ if __name__ == "__main__":
     b = Board(test)
 
     # Serialize the board to a json message
-    pprint(b.toJson())
+    # pprint(b.toJson())
 
-    b.setVisibleFlag("income")
+    print("____TEST ASSASIN LOSS____")
+    # set the visible flag for assasin
+    for s in b.spaces:
+        if s.color == BLACK:
+            b.setVisibleFlag(s.word)
+    
+    winVal = b.checkWin()
+    print("ASSERT {v} == -1".format(v = winVal))
 
-    print("\n\n\n")
 
-    pprint(b.toJson())
+
+    print("____TEST RED WIN____")
+    b1 = Board(test)
+    for s in b1.spaces:
+        if s.color == RED:
+            b1.setVisibleFlag(s.word)
+    
+    winVal = b1.checkWin()
+    print("ASSERT {v} == 2".format(v = winVal))
+
+
+    #print("\n\n\n")
+    #pprint(b.toJson())

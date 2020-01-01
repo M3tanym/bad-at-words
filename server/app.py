@@ -143,7 +143,14 @@ async def handleMessage(data):
 
         # the logic for a touch
         handleTouch(b, rWord, rPlayer)
-        msg = b.toJson()
+        
+        r = {
+            "type" : "visible",
+            "word" : rWord
+        }
+        msg = json.dumps(r)
+        # msg = b.toJson()
+
         await broadcast(sockets, msg)
 
         # TODO: check win condition
