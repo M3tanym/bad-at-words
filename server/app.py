@@ -211,9 +211,15 @@ async def handleMessage(data):
         print("WARNING - player from wrong team requested pass")
     elif rType == "submit":
         rTouchCount = int(r["value"])
-        print("INFO - changing the number of ")
+        print("INFO - changing the number of touches")
+
+        
         defaultNumTouches = rTouchCount
         numTouches = defaultNumTouches
+
+        print("INFO - {x} and {y}".format(x = defaultNumTouches, y = numTouches))
+
+        teamVal = RED if turn is False else BLUE
 
         r = {
             "type" : "turn",
