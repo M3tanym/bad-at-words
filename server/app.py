@@ -214,7 +214,7 @@ async def handleMessage(data):
         print("INFO - changing the number of touches")
 
         
-        defaultNumTouches = rTouchCount
+        defaultNumTouches = rTouchCount + 1
         numTouches = defaultNumTouches
 
         print("INFO - {x} and {y}".format(x = defaultNumTouches, y = numTouches))
