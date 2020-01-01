@@ -211,8 +211,19 @@ async def handleMessage(data):
         print("WARNING - player from wrong team requested pass")
     elif rType == "submit":
         rTouchCount = int(r["value"])
+        print("INFO - changing the number of ")
         defaultNumTouches = rTouchCount
         numTouches = defaultNumTouches
+
+        r = {
+            "type" : "turn",
+            "team" : teamVal,
+            "touches" : numTouches
+        }
+
+        # broadcast turn change to everyone
+        msg = json.dumps(r)
+        await broadcast(sockets, msg)
     else:
         print("ERROR - Case may not be handled yet")
 
