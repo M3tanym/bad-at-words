@@ -244,9 +244,10 @@ function setName(name) {
 function updateTurn(r) {
   var turn_text = document.getElementById("turn_text");
   turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
-  var turn = document.getElementById("turn");
-  turn.className = "";
-  turn.classList.add(r.team);
+  turn_text.className = "";
+  turn_text.classList.add(r.team);
+  setAgentsLeft(r.red, "red");
+  setAgentsLeft(r.blue, "blue");
 }
 
 function setAgentsLeft(num, color) {
