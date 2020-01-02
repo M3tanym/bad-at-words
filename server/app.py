@@ -26,7 +26,7 @@ started = False # has the game been started?
 
 playerIdCount = 0
 turn = None # false is red, true is blue
-defaultNumTouches = 2
+defaultNumTouches = -1
 numTouches = defaultNumTouches
 
 b = None
@@ -133,6 +133,10 @@ async def handleMessage(data):
                 if p.role != GUESSPLAYER:
                     print("WARNING - codemaster tried to touch")
                     return
+        
+        if numTouches < 0:
+            print("WARNING - touch without codemaster submission")
+            return
 
         numTouches = numTouches - 1
 
