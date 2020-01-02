@@ -49,7 +49,7 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .center {
@@ -105,29 +105,15 @@
   box-sizing: border-box;
 }
 
-.red {
-  background-color: #E84F36;
-}
-
-.blue {
-  background-color: #7088E1;
-}
-
-.white {
-  background-color: #F1E8AC;
-}
-
-.tan {
-  background-color: #CCAB35;
-}
-
-.black {
-  background-color: #4E4B4B;
-}
-
-.gray {
-  background-color: lightgray;
-}
+.red { background-color: #E84F36; }
+.blue { background-color: #7088E1; }
+.white { background-color: #F1E8AC; }
+.tan { background-color: #CCAB35; }
+.black { background-color: #4E4B4B; }
+.gray { background-color: lightgray; }
+#red_players { background-color: #E84F36; }
+#neutral_players { background-color: #F1E8AC; }
+#blue_players { background-color: #7088E1; }
 
 .invis {
   color: transparent;
@@ -138,6 +124,42 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+.players {
+  width: 33%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.player {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.player_name {
+  width: 100%;
+  margin-top: 5px;
+  font-family: 'Indie Flower', serif;
+  font-size: 3.6vw;
+}
+
+.player_role {
+  width: 100%;
+  margin-top: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2vw;
+}
+
+#players {
+  width: 100%;
+  display: flex;
 }
 
 #numwords {

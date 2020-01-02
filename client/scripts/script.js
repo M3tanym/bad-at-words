@@ -74,9 +74,8 @@ function processCommand(r) {
       showWin(r);
     break;
     case "room":
-    console.log(OBSERVER);
       if (OBSERVER) {
-        updateRoom(r);
+        updateRoom(r.players);
       }
     break;
     default:
@@ -110,10 +109,35 @@ function showWin(r) {
   banner.classList.add(r.team);
 }
 
-function updateRoom(r) {
-  var setup = document.getElementById("setup");
-  setup.classList.add("hidden");
-  console.log(r);
+function updateRoom(players) {
+  var red_players = document.getElementById("red_players");
+  var neutral_players = document.getElementById("neutral_players");
+  var blue_players = document.getElementById("blue_players");
+  while (red_players.firstChild) {
+    red_players.removeChild(red_players.firstChild);
+  }
+  while (neutral_players.firstChild) {
+    neutral_players.removeChild(neutral_players.firstChild);
+  }
+  while (blue_players.firstChild) {
+    blue_players.removeChild(blue_players.firstChild);
+  }
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    if (!p.role) {
+      continue;
+    }
+    var player_object = generatePlayer(p);
+    if (p.color === "red") {
+      red_players.appendChild(player_object);
+    }
+    else if (p.color === "blue") {
+      blue_players.appendChild(player_object);
+    }
+    else {
+      neutral_players.appendChild(player_object);
+    }
+  }
 }
 
 function updateBoard(words) {
@@ -260,6 +284,26 @@ function generateAgent(color) {
   return s;
 }
 
+function generatePlayer(player) {
+  var p = document.createElement("div");
+  var n = document.createElement("div");
+  var r = document.createElement("div");
+
+  p.classList.add("player");
+  n.classList.add("player_name");
+  r.classList.add("player_role");
+
+  var name = (player.name) ? player.name : "nameless";
+  name += " (" + player.id + ")";
+  n.innerText = name;
+  r.innerText = (player.role) ? player.role : "no role";
+
+  p.appendChild(n);
+  p.appendChild(r);
+  p.id = "player_" + player.id;
+  return p;
+}
+
 function startGame() {
   var start_container = document.getElementById("start_container");
   start_container.classList.add("hidden");
@@ -293,11 +337,23 @@ function processChoice(e) {
   }
   elem.classList.add("selected");
   if (elem.id === "pick_observer") {
-    OBSERVER = true;
+    beginObserver();
   }
   else {
     setTeamRole(which, value);
   }
+}
+
+function beginObserver() {
+  OBSERVER = true;
+  var start_container = document.getElementById("start_container");
+  start_container.classList.remove("hidden");
+  var setup = document.getElementById("setup");
+  setup.classList.add("hidden");
+  var bar = document.getElementById("bar");
+  bar.classList.add("hidden");
+  var p = document.getElementById("players");
+  p.classList.remove("hidden");
 }
 
 function initializeEvents() {
