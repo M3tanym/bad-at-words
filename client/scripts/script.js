@@ -151,9 +151,12 @@ function updateBoard(words) {
 
 function updateTurn(r) {
   var turn_text = document.getElementById("turn_text");
-  var text = r.team + " turn";
+  var text = r.team + " turn - ";
   if (r.touches > 0) {
-    text += " - " + r.touches + " guesses left";
+    text += r.touches + " guesses left";
+  }
+  else {
+    text += "awaiting codemaster";
   }
   turn_text.innerText = text
   turn_text.className = "";
