@@ -75,11 +75,17 @@ async def websocket_endpoint(websocket: WebSocket):
     global turn
     global numTouches
     teamVal = RED if turn is False else BLUE
+
+    redCount, blueCount = b.getScore()
+
     r = {
         "type" : "turn",
         "team" : teamVal,
-        "touches" : numTouches
+        "touches" : numTouches,
+        "red" : redCount,
+        "blue" : blueCount
     }
+
     msg = json.dumps(r)
     await broadcast(sockets, msg)
 
@@ -299,10 +305,14 @@ async def turnLogic(forceTurnChange = False):
 
     teamVal = RED if turn is False else BLUE
 
+    redCount, blueCount = b.getScore()
+
     r = {
         "type" : "turn",
         "team" : teamVal,
-        "touches" : numTouches
+        "touches" : numTouches,
+        "red" : redCount,
+        "blue" : blueCount
     }
 
     # broadcast turn change to everyone
