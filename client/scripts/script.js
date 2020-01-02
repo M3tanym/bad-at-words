@@ -74,6 +74,7 @@ function processCommand(r) {
       showWin(r);
     break;
     case "room":
+    console.log(OBSERVER);
       if (OBSERVER) {
         updateRoom(r);
       }
