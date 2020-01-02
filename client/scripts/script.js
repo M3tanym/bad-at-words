@@ -354,6 +354,11 @@ function beginObserver() {
   bar.classList.add("hidden");
   var p = document.getElementById("players");
   p.classList.remove("hidden");
+  var msg = {
+    type: "observer",
+    player: PLAYERID,
+  };
+  sendMessage(msg);
 }
 
 function initializeEvents() {
