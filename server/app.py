@@ -26,7 +26,7 @@ sockets = [] # store sockets for broadcasting message
 playerIdCount = 0
 turn = None # false is red, true is blue
 defaultNumTouches = 2
-numTouches = defaultNumTouches # TODO: sad, default for number of touches
+numTouches = defaultNumTouches
 
 b = None
 
