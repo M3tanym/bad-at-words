@@ -43,7 +43,7 @@ async def startup_event():
     b = Board(roundWords)
 
     global turn
-    turn = False if b.firstTeam == RED else BLUE
+    turn = False if b.firstTeam == RED else True
 
 @app.get("/")
 async def get():
@@ -222,6 +222,22 @@ async def handleMessage(data):
 
         # send the board to everyone on start
         msg = b.toJson()
+        await broadcast(sockets, msg)
+        # update the turn too
+        teamVal = RED if turn is False else BLUE
+
+        redCount, blueCount = b.getScore()
+
+        r = {
+            "type" : "turn",
+            "team" : teamVal,
+            "touches" : numTouches,
+            "red" : redCount,
+            "blue" : blueCount
+        }
+
+        # broadcast turn change to everyone
+        msg = json.dumps(r)
         await broadcast(sockets, msg)
         return None
     elif rType == "set":
