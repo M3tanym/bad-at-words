@@ -24,7 +24,7 @@ players = []
 sockets = [] # store sockets for broadcasting message
 
 playerIdCount = 0
-turn = False # false is red, true is blue
+turn = None # false is red, true is blue
 defaultNumTouches = 2
 numTouches = defaultNumTouches # TODO: sad, default for number of touches
 
@@ -41,6 +41,9 @@ async def startup_event():
 
     global b
     b = Board(roundWords)
+
+    global turn
+    turn = False if b.firstTeam == RED else BLUE
 
 @app.get("/")
 async def get():
