@@ -12,3 +12,19 @@ class Player:
 
     def __str__(self):
         return "{n} ({i}): {c}/{r}".format(n = self.name, i = self.id, c = self.color, r = self.role)
+    
+    def toDict(self):
+        """
+        Player data to dictionary
+        
+        Returns:
+            [Dict] -- player representation
+        """
+        r = {
+            "name" : self.name,
+            "id" : self.id,
+            "color" : self.color,
+            "role" : self.role
+        }
+
+        return r
