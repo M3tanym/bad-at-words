@@ -33,25 +33,26 @@
         <input id="name" type="text" />
       </div>
       <h1 class="fancy center">Team:</h1>
-      <div class="selection_box">
-          <div class="option_box red" id="pick_red"><div class="texty">red</div></div>
-          <div class="option_box blue" id="pick_blue"><div class="texty">blue</div></div>
+      <div class="selection_box" name="team">
+          <div class="option_box box_half red" id="pick_red"><div class="texty" name="red">red</div></div>
+          <div class="option_box box_half blue" id="pick_blue"><div class="texty" name="blue">blue</div></div>
       </div>
       <h1 class="fancy center">Role:</h1>
-      <div class="selection_box">
-        <div class="option_box black" id="pick_codemaster"><div class="texty">codemaster</div></div>
-        <div class="option_box white" id="pick_guesser"><div class="texty">guesser</div></div>
+      <div class="selection_box" name="role">
+        <div class="option_box box_third black" id="pick_codemaster"><div class="texty small" name="codemaster">codemaster</div></div>
+        <div class="option_box box_third white" id="pick_guesser"><div class="texty" name="guesser">guesser</div></div>
+        <div class="option_box box_third tan" id="pick_observer"><div class="texty" name="observer">observer</div></div>
       </div>
     </div>
     <div id="table_container"></div>
     <div id="start_container" class="hidden">
       <div class="selection_box">
-        <div class="option_box" id="start"><div class="texty">Start!</div></div>
+        <div class="option_box box_half" id="start"><div class="texty">Start!</div></div>
       </div>
     </div>
     <div id="pass_container" class="hidden">
       <div class="selection_box">
-        <div class="option_box" id="pass"><div class="texty">Pass</div></div>
+        <div class="option_box box_half" id="pass"><div class="texty">Pass</div></div>
       </div>
     </div>
     <div id="guess_container" class="hidden">

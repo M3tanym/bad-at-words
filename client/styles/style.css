@@ -36,6 +36,18 @@
   color: black;
 }
 
+.texty {
+  margin-top: 5px;
+  font-family: 'Indie Flower', serif;
+  font-size: 7vw;
+  color: black;
+}
+
+.small {
+  margin-top: 10px !important;
+  font-size: 5vw !important;
+}
+
 .hidden {
   display: none;
 }
@@ -61,6 +73,71 @@
 
 .blueagent {
   fill: #7088E1;
+}
+
+.selection_box {
+  width: 90%;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+}
+
+.box_half {
+    width: 45%;
+}
+
+.box_third {
+    width: 30%;
+}
+
+.selected {
+  padding: 4px !important;
+  border: 4px dashed black;
+}
+
+.option_box {
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.red {
+  background-color: #E84F36;
+}
+
+.blue {
+  background-color: #7088E1;
+}
+
+.white {
+  background-color: #F1E8AC;
+}
+
+.tan {
+  background-color: #CCAB35;
+}
+
+.black {
+  background-color: #4E4B4B;
+}
+
+.gray {
+  background-color: lightgray;
+}
+
+.invis {
+  color: transparent;
+}
+
+.top_text {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 #numwords {
@@ -112,58 +189,6 @@
   margin-top: 50px;
 }
 
-.selection_box {
-  width: 90%;
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 40px;
-}
-
-.option_box {
-  width: 45%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  border-radius: 5px;
-  text-align: center;
-  padding: 5px;
-}
-
-.selected {
-  border: 4px dashed black;
-}
-
-.texty {
-  font-family: 'Indie Flower', serif;
-  font-size: 7.2vw;
-  color: black;
-}
-
-.red {
-  background-color: #E84F36;
-}
-
-.blue {
-  background-color: #7088E1;
-}
-
-.white {
-  background-color: #F1E8AC;
-}
-
-.tan {
-  background-color: #CCAB35;
-}
-
-.black {
-  background-color: #4E4B4B;
-}
-
-.gray {
-  background-color: lightgray;
-}
-
 #start, #pass, #guess {
   margin-top: 20px;
   padding: 6px;
@@ -196,13 +221,6 @@
   font-size: 5vw;
   text-align: center;
   padding: 5px;
-}
-
-.top_text {
-  width: 40%;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
 }
 
 #name {
@@ -253,8 +271,4 @@ td .content {
   vertical-align: middle;
   border-radius: 5px;
   transition: background 1s, color 5s;
-}
-
-.invis {
-  color: transparent;
 }

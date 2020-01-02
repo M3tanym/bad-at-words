@@ -16,6 +16,7 @@ var PLAYERID = 42;
 var TEAM;
 var ROLE;
 var STARTED = false;
+var OBSERVER = false;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -54,9 +55,6 @@ function endSocket() {
 
 function processCommand(r) {
   switch(r.type) {
-    case "test":
-      console.log("test!");
-    break;
     case "playerid":
       setID(r.value);
     break;
@@ -74,6 +72,11 @@ function processCommand(r) {
     break;
     case "win":
       showWin(r);
+    break;
+    case "room":
+      if (OBSERVER) {
+        updateRoom(r);
+      }
     break;
     default:
       console.log("unknown command " + r.type);
@@ -104,6 +107,12 @@ function showWin(r) {
   banner_reason.innerText = r.method;
   banner.className = "";
   banner.classList.add(r.team);
+}
+
+function updateRoom(r) {
+  var setup = document.getElementById("setup");
+  setup.classList.add("hidden");
+  console.log(r);
 }
 
 function updateBoard(words) {
@@ -269,32 +278,39 @@ function submitGuesses(v) {
   sendMessage(msg);
 }
 
+function processChoice(e) {
+  if (e.target.classList.contains("option_box")) {
+    return;
+  }
+  var parent = e.target.parentElement.parentElement;
+  var elem = e.target.parentElement;
+  var value = e.target.getAttribute("name");
+  var which = parent.getAttribute("name");
+
+  for (var i = 0; i < parent.children.length; i++) {
+    parent.children[i].classList.remove("selected");
+  }
+  elem.classList.add("selected");
+  if (elem.id === "pick_observer") {
+    OBSERVER = true;
+  }
+  else {
+    setTeamRole(which, value);
+  }
+}
+
 function initializeEvents() {
   // Set up the event handlers
   var red = document.getElementById("pick_red");
   var blue = document.getElementById("pick_blue");
   var codemaster = document.getElementById("pick_codemaster");
   var guesser = document.getElementById("pick_guesser");
-  red.addEventListener("click", function() {
-    red.classList.add("selected");
-    blue.classList.remove("selected");
-    setTeamRole("team", "red");
-  });
-  blue.addEventListener("click", function() {
-    red.classList.remove("selected");
-    blue.classList.add("selected");
-    setTeamRole("team", "blue");
-  });
-  codemaster.addEventListener("click", function() {
-    codemaster.classList.add("selected");
-    guesser.classList.remove("selected");
-    setTeamRole("role", "codemaster");
-  });
-  guesser.addEventListener("click", function() {
-    codemaster.classList.remove("selected");
-    guesser.classList.add("selected");
-    setTeamRole("role", "guesser");
-  });
+  var observer = document.getElementById("pick_observer");
+  red.addEventListener("click", processChoice);
+  blue.addEventListener("click", processChoice);
+  guesser.addEventListener("click", processChoice);
+  codemaster.addEventListener("click", processChoice);
+  observer.addEventListener("click", processChoice);
 
   var start = document.getElementById("start");
   start.addEventListener("click", startGame);
