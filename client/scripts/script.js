@@ -305,6 +305,8 @@ function initializeEvents() {
   var guess = document.getElementById("guess");
   guess.addEventListener("click", function() {
     var num = document.getElementById("number").value * 1;
+    var guess_container = document.getElementById("guess");
+    guess_container.classList.add("hidden");
     submitGuesses(num);
   });
 }
