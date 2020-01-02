@@ -49,6 +49,11 @@ class Space:
 class Board:
     spaces = []
 
+    redAgentCount = None
+    blueAgentCount = None
+    
+    firstTeam = None
+
     def __init__(self, wordList):
         """
         Constructor for a board
@@ -58,14 +63,25 @@ class Board:
         """
         random.shuffle(wordList)
 
+        val = int(random.random()*2)
+        firstTeam = BLUE if val else RED
+        self.firstTeam = firstTeam
+        secondteam = RED if val else BLUE
+
+        if firstTeam == RED:
+            self.redAgentCount = 9
+            self.blueAgentCount = 8
+        else:
+            self.redAgentCount = 8
+            self.blueAgentCount = 9
+
         # make spaces out of words
-        # RED team
-        # TODO: red team always starts lol
+        # first team
         for word in wordList[0:9]:
-            self.spaces.append(Space(RED, word))
-        # BLUE team
+            self.spaces.append(Space(firstTeam, word))
+        # second team
         for word in wordList[9:17]:
-            self.spaces.append(Space(BLUE, word))
+            self.spaces.append(Space(secondteam, word))
         # NOBODYS team
         for word in wordList[17:24]:
             self.spaces.append(Space(WHITE, word))
@@ -146,9 +162,24 @@ class Board:
             if s.word == word:
                 return s
 
-    def checkWin(self):
-        firstTeam = False # make red default first team
+    def getScore(self):
+        """
+        Finds the count of red and blue agents currently visible
+        """
+        redCount = 0
+        blueCount = 0
 
+        for s in self.spaces:
+            if s.visible == True:
+                if s.color == RED:
+                    redCount += 1
+                elif s.color == BLUE:
+                    blueCount += 1
+
+        return redCount, blueCount
+
+
+    def checkWin(self):
         redCount = 0
         blueCount = 0
         assasin = False
@@ -169,11 +200,11 @@ class Board:
         
         # all red agents found
         # 2 signifies Red team victory
-        if redCount >= 9:
+        if redCount >= self.redAgentCount:
             return 2
         # all blue agents found
         # 3 signifies the Blue team victory
-        if blueCount >= 8:
+        if blueCount >= self.blueAgentCount:
             return 3
         
         # return 0 on no winning condition

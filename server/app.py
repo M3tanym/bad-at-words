@@ -24,7 +24,7 @@ players = []
 sockets = [] # store sockets for broadcasting message
 
 playerIdCount = 0
-turn = False # false is red, true is blue
+turn = None # false is red, true is blue
 defaultNumTouches = 2
 numTouches = defaultNumTouches # TODO: sad, default for number of touches
 
@@ -41,6 +41,9 @@ async def startup_event():
 
     global b
     b = Board(roundWords)
+
+    global turn
+    turn = False if b.firstTeam == RED else BLUE
 
 @app.get("/")
 async def get():
@@ -75,11 +78,17 @@ async def websocket_endpoint(websocket: WebSocket):
     global turn
     global numTouches
     teamVal = RED if turn is False else BLUE
+
+    redCount, blueCount = b.getScore()
+
     r = {
         "type" : "turn",
         "team" : teamVal,
-        "touches" : numTouches
+        "touches" : numTouches,
+        "red" : redCount,
+        "blue" : blueCount
     }
+
     msg = json.dumps(r)
     await broadcast(sockets, msg)
 
@@ -262,10 +271,14 @@ async def handleMessage(data):
 
         teamVal = RED if turn is False else BLUE
 
+        redCount, blueCount = b.getScore()
+
         r = {
             "type" : "turn",
             "team" : teamVal,
-            "touches" : numTouches
+            "touches" : numTouches,
+            "red" : redCount,
+            "blue" : blueCount
         }
 
         # broadcast turn change to everyone
@@ -295,10 +308,14 @@ async def turnLogic(forceTurnChange = False):
 
     teamVal = RED if turn is False else BLUE
 
+    redCount, blueCount = b.getScore()
+
     r = {
         "type" : "turn",
         "team" : teamVal,
-        "touches" : numTouches
+        "touches" : numTouches,
+        "red" : redCount,
+        "blue" : blueCount
     }
 
     # broadcast turn change to everyone
