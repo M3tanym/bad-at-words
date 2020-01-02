@@ -176,6 +176,9 @@ class Board:
                 elif s.color == BLUE:
                     blueCount += 1
 
+        redCount = self.redAgentCount - redCount
+        blueCount = self.blueAgentCount - blueCount
+
         return redCount, blueCount
 
 
