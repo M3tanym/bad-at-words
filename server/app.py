@@ -22,6 +22,7 @@ words = []
 roundWords = []
 players = []
 sockets = [] # store sockets for broadcasting message
+started = False # has the game been started?
 
 playerIdCount = 0
 turn = None # false is red, true is blue
@@ -74,23 +75,10 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.send_text(json.dumps(r))
     playerIdCount += 1
 
-    # initialize turn
-    global turn
-    global numTouches
-    teamVal = RED if turn is False else BLUE
-
-    redCount, blueCount = b.getScore()
-
-    r = {
-        "type" : "turn",
-        "team" : teamVal,
-        "touches" : numTouches,
-        "red" : redCount,
-        "blue" : blueCount
-    }
-
-    msg = json.dumps(r)
-    await broadcast(sockets, msg)
+    global started
+    if started:
+        msg = b.toJson()
+        await broadcast(sockets, msg)
 
     # Loop to handle all subsequent requests
     while True:
@@ -120,6 +108,7 @@ async def handleMessage(data):
     global sockets
     global numTouches
     global turn
+    global started
 
 
     #  Handles a word being touched
@@ -219,7 +208,7 @@ async def handleMessage(data):
         """
 
         print("INFO - starting the game with {n} players".format(n = len(players)))
-
+        started = True
         # send the board to everyone on start
         msg = b.toJson()
         await broadcast(sockets, msg)

@@ -13,8 +13,9 @@ var ws;
 
 // player id
 var PLAYERID = 42;
+var TEAM;
 var ROLE;
-var started = false;
+var STARTED = false;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -46,9 +47,9 @@ function beginSocket() {
 
 function endSocket() {
   // ask the user to reload the page if the socket is lost
-  if (confirm("Lost connection to server. Reload page?")) {
-    location.reload(true);
-  }
+  // if (confirm("Lost connection to server. Reload page?")) {
+  //   location.reload(true);
+  // }
 }
 
 function processCommand(r) {
@@ -57,17 +58,17 @@ function processCommand(r) {
       console.log("test!");
     break;
     case "playerid":
-      PLAYERID = r.value;
+      setID(r.value);
     break;
     case "board":
-      started = true;
+      STARTED = true;
       updateBoard(r.spaces);
     break;
     case "visible":
       makeVisible(r.word);
     break;
     case "turn":
-      if (started) {
+      if (STARTED) {
         updateTurn(r);
       }
     break;
@@ -76,6 +77,14 @@ function processCommand(r) {
     break;
     default:
       console.log("unknown command " + r.type);
+  }
+}
+
+function setID(id) {
+  PLAYERID = id;
+  if (PLAYERID == 0){
+    var start_container = document.getElementById("start_container");
+    start_container.className = "";
   }
 }
 
@@ -138,14 +147,31 @@ function updateBoard(words) {
     table.appendChild(tr);
   }
   container.appendChild(table);
+}
 
-  if (ROLE == "codemaster") {
-    var guess_container = document.getElementById("guess_container");
-    guess_container.className = "";
+function updateTurn(r) {
+  var turn_text = document.getElementById("turn_text");
+  var text = r.team + " turn";
+  if (r.touches > 0) {
+    text += " - " + r.touches + " guesses left";
+  }
+  turn_text.innerText = text
+  turn_text.className = "";
+  turn_text.classList.add(r.team);
+  setAgentsLeft(r.red, "red");
+  setAgentsLeft(r.blue, "blue");
+
+  var pass_container = document.getElementById("pass_container");
+  var guess_container = document.getElementById("guess_container");
+  if (r.team === TEAM) {
+    pass_container.className = "";
+    if (ROLE == "codemaster") {
+      guess_container.className = "";
+    }
   }
   else {
-    var pass_container = document.getElementById("pass_container");
-    pass_container.className = "";
+    pass_container.classList.add("hidden");
+    guess_container.classList.add("hidden");
   }
 }
 
@@ -167,15 +193,16 @@ function passTurn() {
 }
 
 function setTeamRole(which, value) {
-  if (which == "role") {
+  if (which === "role") {
     var role_text = document.getElementById("role_text");
     role_text.innerText = value;
     ROLE = value;
   }
-  else {
+  else if (which === "team") {
     var bar = document.getElementById("bar");
     bar.className = "";
     bar.classList.add(value);
+    TEAM = value;
   }
   var msg = {
     type: "set",
@@ -196,16 +223,6 @@ function setName(name) {
     value: name
   };
   sendMessage(msg);
-}
-
-function updateTurn(r) {
-  console.log("updateTurn: " + r);
-  var turn_text = document.getElementById("turn_text");
-  turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
-  turn_text.className = "";
-  turn_text.classList.add(r.team);
-  setAgentsLeft(r.red, "red");
-  setAgentsLeft(r.blue, "blue");
 }
 
 function setAgentsLeft(num, color) {
@@ -229,6 +246,8 @@ function generateAgent(color) {
 }
 
 function startGame() {
+  var start_container = document.getElementById("start_container");
+  start_container.classList.add("hidden");
   var msg = {
     type: "start",
     player: PLAYERID
