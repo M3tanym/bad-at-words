@@ -14,7 +14,7 @@ var ws;
 // player id
 var PLAYERID = 42;
 var ROLE;
-var words = [];
+var started = false;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -60,14 +60,16 @@ function processCommand(r) {
       PLAYERID = r.value;
     break;
     case "board":
-      words = r.spaces;
-      updateBoard();
+      started = true;
+      updateBoard(r.spaces);
     break;
     case "visible":
       makeVisible(r.word);
     break;
     case "turn":
-      updateTurn(r);
+      if (started) {
+        updateTurn(r);
+      }
     break;
     case "win":
       showWin(r);
@@ -95,7 +97,7 @@ function showWin(r) {
   banner.classList.add(r.team);
 }
 
-function updateBoard() {
+function updateBoard(words) {
   var setup = document.getElementById("setup");
   setup.classList.add("hidden");
   var container = document.getElementById("table_container");
@@ -164,6 +166,85 @@ function passTurn() {
   sendMessage(msg);
 }
 
+function setTeamRole(which, value) {
+  if (which == "role") {
+    var role_text = document.getElementById("role_text");
+    role_text.innerText = value;
+    ROLE = value;
+  }
+  else {
+    var bar = document.getElementById("bar");
+    bar.className = "";
+    bar.classList.add(value);
+  }
+  var msg = {
+    type: "set",
+    player: PLAYERID,
+    which: which,
+    value: value
+  };
+  sendMessage(msg);
+}
+
+function setName(name) {
+  var name_text = document.getElementById("name_text");
+  name_text.innerText = name;
+  var msg = {
+    type: "set",
+    player: PLAYERID,
+    which: "name",
+    value: name
+  };
+  sendMessage(msg);
+}
+
+function updateTurn(r) {
+  console.log("updateTurn: " + r);
+  var turn_text = document.getElementById("turn_text");
+  turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
+  turn_text.className = "";
+  turn_text.classList.add(r.team);
+  setAgentsLeft(r.red, "red");
+  setAgentsLeft(r.blue, "blue");
+}
+
+function setAgentsLeft(num, color) {
+  var agents = document.getElementById(color + "agents");
+  while (agents.childElementCount > num) {
+    agents.removeChild(agents.firstChild);
+  }
+  while (agents.childElementCount < num) {
+    agents.appendChild(generateAgent(color));
+  }
+}
+
+function generateAgent(color) {
+  let s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#agent");
+  s.classList.add("agent");
+  s.classList.add(color + "agent");
+  s.appendChild(u);
+  return s;
+}
+
+function startGame() {
+  var msg = {
+    type: "start",
+    player: PLAYERID
+  };
+  sendMessage(msg);
+}
+
+function submitGuesses(v) {
+  var msg = {
+    type: "submit",
+    player: PLAYERID,
+    value: v
+  };
+  sendMessage(msg);
+}
+
 function initializeEvents() {
   // Set up the event handlers
   var red = document.getElementById("pick_red");
@@ -207,83 +288,6 @@ function initializeEvents() {
     var num = document.getElementById("number").value * 1;
     submitGuesses(num);
   });
-}
-
-function setTeamRole(which, value) {
-  if (which == "role") {
-    var role_text = document.getElementById("role_text");
-    role_text.innerText = value;
-    ROLE = value;
-  }
-  else {
-    var bar = document.getElementById("bar");
-    bar.className = "";
-    bar.classList.add(value);
-  }
-  var msg = {
-    type: "set",
-    player: PLAYERID,
-    which: which,
-    value: value
-  };
-  sendMessage(msg);
-}
-
-function setName(name) {
-  var name_text = document.getElementById("name_text");
-  name_text.innerText = name;
-  var msg = {
-    type: "set",
-    player: PLAYERID,
-    which: "name",
-    value: name
-  };
-  sendMessage(msg);
-}
-
-function updateTurn(r) {
-  var turn_text = document.getElementById("turn_text");
-  turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
-  var turn = document.getElementById("turn");
-  turn.className = "";
-  turn.classList.add(r.team);
-}
-
-function setAgentsLeft(num, color) {
-  var agents = document.getElementById(color + "agents");
-  while (agents.childElementCount > num) {
-    agents.removeChild(agents.firstChild);
-  }
-  while (agents.childElementCount < num) {
-    agents.appendChild(generateAgent(color));
-  }
-}
-
-function generateAgent(color) {
-  let s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  let u = document.createElementNS("http://www.w3.org/2000/svg", "use");
-  u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#agent");
-  s.classList.add("agent");
-  s.classList.add(color + "agent");
-  s.appendChild(u);
-  return s;
-}
-
-function startGame() {
-  var msg = {
-    type: "start",
-    player: PLAYERID
-  };
-  sendMessage(msg);
-}
-
-function submitGuesses(v) {
-  var msg = {
-    type: "submit",
-    player: PLAYERID,
-    value: v
-  };
-  sendMessage(msg);
 }
 
 // Page init
