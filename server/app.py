@@ -253,6 +253,10 @@ async def handleMessage(data):
         rID = int(r["player"])
         teamTurn = RED if turn is False else BLUE
 
+        if numTouches < 0:
+            print("WARNING - pass without codemaster submission")
+            return
+
         for p in players:
             if p.id == rID:
                 if p.color != teamTurn:
