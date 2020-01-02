@@ -202,6 +202,9 @@ async def handleMessage(data):
 
         # return reponse to client?
         return None
+    elif rType == "observer":
+        await broadcast(sockets, room_msg(players))
+        return None
     # Start game message
     elif rType == "start":
         """
