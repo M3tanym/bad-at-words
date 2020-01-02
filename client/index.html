@@ -22,7 +22,11 @@
       &nbsp;-&nbsp;
       <div class="top_text" id="role_text">[role]</div>
     </div>
-    <div id="turn" class="gray">Turn</div>
+    <div id="turn" class="gray">
+      <div id="turn_text">Turn</div>
+      <div id="redcards"></div>
+      <div id="bluecards"></div>
+    </div>
     <div id="setup">
       <h1 class="fancy center">Name:</h1>
       <div class="selection_box">
@@ -49,7 +53,7 @@
       </div>
     </div>
     <div id="guess_container" class="hidden">
-      Number of words:
+      <div id="numwords">Number of words to declare:</div>
       <input id="number" type="number" />
       <div class="option_box" id="guess">
         <div class="texty">Declare</div>

@@ -67,7 +67,7 @@ function processCommand(r) {
       makeVisible(r.word);
     break;
     case "turn":
-      setTurn(r);
+      updateTurn(r);
     break;
     case "win":
       showWin(r);
@@ -136,11 +136,14 @@ function updateBoard() {
     table.appendChild(tr);
   }
   container.appendChild(table);
-  var pass_container = document.getElementById("pass_container");
-  pass_container.className = "";
+
   if (ROLE == "codemaster") {
     var guess_container = document.getElementById("guess_container");
     guess_container.className = "";
+  }
+  else {
+    var pass_container = document.getElementById("pass_container");
+    pass_container.className = "";
   }
 }
 
@@ -238,11 +241,12 @@ function setName(name) {
   sendMessage(msg);
 }
 
-function setTurn(r) {
-  var turn = document.getElementById("turn");
-  turn.innerText = r.team + " turn - " + r.touches + " guesses left"
-  turn.className = "";
-  turn.classList.add(r.team);
+function updateTurn(r) {
+  var turn_text = document.getElementById("turn_text");
+  turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
+  turn_text.className = "";
+  turn_text.classList.add(r.team);
+  var turn = document.getElementById("turn_text");
 }
 
 function startGame() {
