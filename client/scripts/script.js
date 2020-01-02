@@ -244,9 +244,29 @@ function setName(name) {
 function updateTurn(r) {
   var turn_text = document.getElementById("turn_text");
   turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
-  turn_text.className = "";
-  turn_text.classList.add(r.team);
-  var turn = document.getElementById("turn_text");
+  var turn = document.getElementById("turn");
+  turn.className = "";
+  turn.classList.add(r.team);
+}
+
+function setAgentsLeft(num, color) {
+  var agents = document.getElementById(color + "agents");
+  while (agents.childElementCount > num) {
+    agents.removeChild(agents.firstChild);
+  }
+  while (agents.childElementCount < num) {
+    agents.appendChild(generateAgent(color));
+  }
+}
+
+function generateAgent(color) {
+  let s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#agent");
+  s.classList.add("agent");
+  s.classList.add(color + "agent");
+  s.appendChild(u);
+  return s;
 }
 
 function startGame() {

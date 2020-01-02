@@ -44,6 +44,25 @@
   text-align: center;
 }
 
+.agent {
+  width: 3vw;
+  height: 3vw;
+}
+
+.agents {
+  width: 100%;
+  display: flex;
+  margin-top: 15px;
+}
+
+.redagent {
+  fill: #E84F36;
+}
+
+.blueagent {
+  fill: #7088E1;
+}
+
 #numwords {
   margin-left: auto;
   margin-right: auto;
