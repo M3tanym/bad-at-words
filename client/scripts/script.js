@@ -67,7 +67,7 @@ function processCommand(r) {
       makeVisible(r.word);
     break;
     case "turn":
-      setTurn(r);
+      updateTurn(r);
     break;
     case "win":
       showWin(r);
@@ -136,11 +136,14 @@ function updateBoard() {
     table.appendChild(tr);
   }
   container.appendChild(table);
-  var pass_container = document.getElementById("pass_container");
-  pass_container.className = "";
+
   if (ROLE == "codemaster") {
     var guess_container = document.getElementById("guess_container");
     guess_container.className = "";
+  }
+  else {
+    var pass_container = document.getElementById("pass_container");
+    pass_container.className = "";
   }
 }
 
@@ -238,11 +241,32 @@ function setName(name) {
   sendMessage(msg);
 }
 
-function setTurn(r) {
+function updateTurn(r) {
+  var turn_text = document.getElementById("turn_text");
+  turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
   var turn = document.getElementById("turn");
-  turn.innerText = r.team + " turn - " + r.touches + " guesses left"
   turn.className = "";
   turn.classList.add(r.team);
+}
+
+function setAgentsLeft(num, color) {
+  var agents = document.getElementById(color + "agents");
+  while (agents.childElementCount > num) {
+    agents.removeChild(agents.firstChild);
+  }
+  while (agents.childElementCount < num) {
+    agents.appendChild(generateAgent(color));
+  }
+}
+
+function generateAgent(color) {
+  let s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#agent");
+  s.classList.add("agent");
+  s.classList.add(color + "agent");
+  s.appendChild(u);
+  return s;
 }
 
 function startGame() {
