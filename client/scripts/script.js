@@ -14,7 +14,7 @@ var ws;
 // player id
 var PLAYERID = 42;
 var ROLE;
-var words = [];
+var started = false;
 
 function initializeSocket() {
   // Open the WebSocket and set up its handlers
@@ -60,14 +60,16 @@ function processCommand(r) {
       PLAYERID = r.value;
     break;
     case "board":
-      words = r.spaces;
-      updateBoard();
+      started = true;
+      updateBoard(r.spaces);
     break;
     case "visible":
       makeVisible(r.word);
     break;
     case "turn":
-      updateTurn(r);
+      if (started) {
+        updateTurn(r);
+      }
     break;
     case "win":
       showWin(r);
@@ -95,7 +97,7 @@ function showWin(r) {
   banner.classList.add(r.team);
 }
 
-function updateBoard() {
+function updateBoard(words) {
   var setup = document.getElementById("setup");
   setup.classList.add("hidden");
   var container = document.getElementById("table_container");
@@ -164,51 +166,6 @@ function passTurn() {
   sendMessage(msg);
 }
 
-function initializeEvents() {
-  // Set up the event handlers
-  var red = document.getElementById("pick_red");
-  var blue = document.getElementById("pick_blue");
-  var codemaster = document.getElementById("pick_codemaster");
-  var guesser = document.getElementById("pick_guesser");
-  red.addEventListener("click", function() {
-    red.classList.add("selected");
-    blue.classList.remove("selected");
-    setTeamRole("team", "red");
-  });
-  blue.addEventListener("click", function() {
-    red.classList.remove("selected");
-    blue.classList.add("selected");
-    setTeamRole("team", "blue");
-  });
-  codemaster.addEventListener("click", function() {
-    codemaster.classList.add("selected");
-    guesser.classList.remove("selected");
-    setTeamRole("role", "codemaster");
-  });
-  guesser.addEventListener("click", function() {
-    codemaster.classList.remove("selected");
-    guesser.classList.add("selected");
-    setTeamRole("role", "guesser");
-  });
-
-  var start = document.getElementById("start");
-  start.addEventListener("click", startGame);
-
-  var name = document.getElementById("name");
-  name.addEventListener("change", function() {
-    setName(name.value);
-  });
-
-  var pass = document.getElementById("pass");
-  pass.addEventListener("click", passTurn);
-
-  var guess = document.getElementById("guess");
-  guess.addEventListener("click", function() {
-    var num = document.getElementById("number").value * 1;
-    submitGuesses(num);
-  });
-}
-
 function setTeamRole(which, value) {
   if (which == "role") {
     var role_text = document.getElementById("role_text");
@@ -242,6 +199,7 @@ function setName(name) {
 }
 
 function updateTurn(r) {
+  console.log("updateTurn: " + r);
   var turn_text = document.getElementById("turn_text");
   turn_text.innerText = r.team + " turn - " + r.touches + " guesses left"
   turn_text.className = "";
@@ -285,6 +243,51 @@ function submitGuesses(v) {
     value: v
   };
   sendMessage(msg);
+}
+
+function initializeEvents() {
+  // Set up the event handlers
+  var red = document.getElementById("pick_red");
+  var blue = document.getElementById("pick_blue");
+  var codemaster = document.getElementById("pick_codemaster");
+  var guesser = document.getElementById("pick_guesser");
+  red.addEventListener("click", function() {
+    red.classList.add("selected");
+    blue.classList.remove("selected");
+    setTeamRole("team", "red");
+  });
+  blue.addEventListener("click", function() {
+    red.classList.remove("selected");
+    blue.classList.add("selected");
+    setTeamRole("team", "blue");
+  });
+  codemaster.addEventListener("click", function() {
+    codemaster.classList.add("selected");
+    guesser.classList.remove("selected");
+    setTeamRole("role", "codemaster");
+  });
+  guesser.addEventListener("click", function() {
+    codemaster.classList.remove("selected");
+    guesser.classList.add("selected");
+    setTeamRole("role", "guesser");
+  });
+
+  var start = document.getElementById("start");
+  start.addEventListener("click", startGame);
+
+  var name = document.getElementById("name");
+  name.addEventListener("change", function() {
+    setName(name.value);
+  });
+
+  var pass = document.getElementById("pass");
+  pass.addEventListener("click", passTurn);
+
+  var guess = document.getElementById("guess");
+  guess.addEventListener("click", function() {
+    var num = document.getElementById("number").value * 1;
+    submitGuesses(num);
+  });
 }
 
 // Page init
