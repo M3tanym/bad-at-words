@@ -262,10 +262,14 @@ async def handleMessage(data):
 
         teamVal = RED if turn is False else BLUE
 
+        redCount, blueCount = b.getScore()
+
         r = {
             "type" : "turn",
             "team" : teamVal,
-            "touches" : numTouches
+            "touches" : numTouches,
+            "red" : redCount,
+            "blue" : blueCount
         }
 
         # broadcast turn change to everyone

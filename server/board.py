@@ -146,9 +146,24 @@ class Board:
             if s.word == word:
                 return s
 
-    def checkWin(self):
-        firstTeam = False # make red default first team
+    def getScore(self):
+        """
+        Finds the count of red and blue agents currently visible
+        """
+        redCount = 0
+        blueCount = 0
 
+        for s in self.spaces:
+            if s.visible == True:
+                if s.color == RED:
+                    redCount += 1
+                elif s.color == BLUE:
+                    blueCount += 1
+
+        return redCount, blueCount
+
+
+    def checkWin(self):
         redCount = 0
         blueCount = 0
         assasin = False
