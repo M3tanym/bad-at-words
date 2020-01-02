@@ -167,9 +167,11 @@ function updateTurn(r) {
   var pass_container = document.getElementById("pass_container");
   var guess_container = document.getElementById("guess_container");
   if (r.team === TEAM) {
-    pass_container.className = "";
     if (ROLE == "codemaster") {
       guess_container.className = "";
+    }
+    else {
+      pass_container.className = "";
     }
   }
   else {
@@ -308,8 +310,6 @@ function initializeEvents() {
   var guess = document.getElementById("guess");
   guess.addEventListener("click", function() {
     var num = document.getElementById("number").value * 1;
-    var guess_container = document.getElementById("guess");
-    guess_container.classList.add("hidden");
     submitGuesses(num);
   });
 }

@@ -65,7 +65,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     # new player gets created on new websocket
     global playerIdCount, players
-    players.append(Player("name", playerIdCount, RED, GUESSPLAYER))
+    players.append(Player(None, playerIdCount, None, None))
 
     r = {
         "type" : "playerid",
@@ -133,7 +133,7 @@ async def handleMessage(data):
                 if p.role != GUESSPLAYER:
                     print("WARNING - codemaster tried to touch")
                     return
-        
+
         if numTouches < 0:
             print("WARNING - touch without codemaster submission")
             return
