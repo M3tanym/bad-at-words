@@ -69,7 +69,7 @@ async def websocket_endpoint(websocket: WebSocket):
     players.append(Player(None, playerIdCount, None, None))
 
     # send room update to everyone
-    broadcast(sockets, room_msg(players)) 
+    await broadcast(sockets, room_msg(players)) 
 
     # send playerID message to player
     await websocket.send_text( await playerid_msg(playerIdCount))
