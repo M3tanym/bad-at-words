@@ -11,6 +11,7 @@ from player import Player
 from logic import handleTouch, handleTeamChange, handleRoleChange, handleNameChange
 from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER, AGENT_VICTORY, ASSASIN_VICTORY
 from board import Board
+from messages import room_msg, playerid_msg
 
 app = FastAPI()
 
@@ -67,12 +68,11 @@ async def websocket_endpoint(websocket: WebSocket):
     global playerIdCount, players
     players.append(Player(None, playerIdCount, None, None))
 
-    r = {
-        "type" : "playerid",
-        "value" : playerIdCount
-    }
+    # send room update to everyone
+    broadcast(sockets, room_msg(players)) 
 
-    await websocket.send_text(json.dumps(r))
+    # send playerID message to player
+    await websocket.send_text( await playerid_msg(playerIdCount))
     playerIdCount += 1
 
     global started
