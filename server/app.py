@@ -238,6 +238,8 @@ async def handleMessage(data):
         rID = int(r["player"])
         rValue = str(r["value"])
 
+        await broadcast(sockets, room_msg(players))
+
         print("INFO - setting {w} for player {p} as {v}".format(w = rWhich, p = rID, v = rValue))
 
         if rWhich == "team":
