@@ -99,16 +99,6 @@ function makeVisible(word) {
   w.classList.add("invis");
 }
 
-function showWin(r) {
-  var banner = document.getElementById("banner");
-  var banner_text = document.getElementById("banner_text");
-  var banner_reason = document.getElementById("banner_reason");
-  banner_text.innerText = r.team + " wins!";
-  banner_reason.innerText = r.method;
-  banner.className = "";
-  banner.classList.add(r.team);
-}
-
 function updateRoom(players) {
   var red_players = document.getElementById("red_players");
   var neutral_players = document.getElementById("neutral_players");
@@ -212,6 +202,8 @@ function updateTurn(r) {
     pass_container.classList.add("hidden");
     guess_container.classList.add("hidden");
   }
+  var start_container = document.getElementById("start_container");
+  start_container.classList.add("hidden");
 }
 
 function touchWord(e) {
@@ -304,9 +296,20 @@ function generatePlayer(player) {
   return p;
 }
 
+function showWin(r) {
+  var banner = document.getElementById("banner");
+  var banner_text = document.getElementById("banner_text");
+  var banner_reason = document.getElementById("banner_reason");
+  banner_text.innerText = r.team + " wins!";
+  banner_reason.innerText = r.method;
+  banner.className = "";
+  banner.classList.add(r.team);
+  if (r.method === "agent") {
+    setAgentsLeft(0, r.team);
+  }
+}
+
 function startGame() {
-  var start_container = document.getElementById("start_container");
-  start_container.classList.add("hidden");
   var msg = {
     type: "start",
     player: PLAYERID
