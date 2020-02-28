@@ -18,79 +18,6 @@ var ROLE;
 var STARTED = false;
 var OBSERVER = false;
 
-function initializeSocket() {
-  // Open the WebSocket and set up its handlers
-  loc = "ws://" + location.host + "/ws";
-  ws = new WebSocket(loc);
-  ws.onopen = beginSocket;
-  ws.onmessage = function(evt) { receiveMessage(evt.data) };
-  ws.onclose = endSocket;
-  ws.onerror = endSocket;
-}
-
-function receiveMessage(msg) {
-  // receiveMessage is called when any message from the server arrives on the WebSocket
-  console.log("recieved: " + msg);
-  var r = JSON.parse(msg);
-  processCommand(r);
-}
-
-function sendMessage(msg) {
-  // simple send
-  var m = JSON.stringify(msg);
-  console.log("sending: " + m)
-  ws.send(m);
-}
-
-function beginSocket() {
-  // handler for socket open
-}
-
-function endSocket() {
-  // ask the user to reload the page if the socket is lost
-  // if (confirm("Lost connection to server. Reload page?")) {
-  //   location.reload(true);
-  // }
-}
-
-function processCommand(r) {
-  switch(r.type) {
-    case "playerid":
-      setID(r.value);
-    break;
-    case "board":
-      STARTED = true;
-      updateBoard(r.spaces);
-    break;
-    case "visible":
-      makeVisible(r.word);
-    break;
-    case "turn":
-      if (STARTED) {
-        updateTurn(r);
-      }
-    break;
-    case "win":
-      showWin(r);
-    break;
-    case "room":
-      if (OBSERVER) {
-        updateRoom(r.players);
-      }
-    break;
-    default:
-      console.log("unknown command " + r.type);
-  }
-}
-
-function setID(id) {
-  PLAYERID = id;
-  if (PLAYERID == 0){
-    var start_container = document.getElementById("start_container");
-    start_container.className = "";
-  }
-}
-
 function makeVisible(word) {
   var w = document.getElementById("_" + word + "_");
   w.className = "";
@@ -131,6 +58,9 @@ function updateRoom(players) {
 }
 
 function updateBoard(words) {
+  if (OBSERVER) {
+    document.getElementById("turn").scrollIntoView();
+  }
   var setup = document.getElementById("setup");
   setup.classList.add("hidden");
   var container = document.getElementById("table_container");

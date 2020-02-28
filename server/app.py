@@ -1,4 +1,5 @@
 from random import sample # random samples
+import random # random random
 from fastapi import FastAPI # fastAPI
 from starlette.responses import RedirectResponse # for redirecting root
 from starlette.staticfiles import StaticFiles # serve static files
@@ -11,7 +12,7 @@ from player import Player
 from logic import handleTouch, handleTeamChange, handleRoleChange, handleNameChange
 from settings import VERSION, RED, BLACK, BLUE, WHITE, GUESSPLAYER, CMPLAYER, AGENT_VICTORY, ASSASIN_VICTORY
 from board import Board
-from messages import room_msg, playerid_msg
+from messages import room_msg, playerid_msg, player_reconnect_msg
 
 app = FastAPI()
 
@@ -24,6 +25,7 @@ roundWords = []
 players = []
 sockets = [] # store sockets for broadcasting message
 started = False # has the game been started?
+gameID = int(random.random() * 10000000) # uniquely identify the game
 
 playerIdCount = 0
 turn = None # false is red, true is blue
@@ -59,39 +61,44 @@ async def version():
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    global sockets
+    global started
 
     # Add to list of sockets
-    global sockets
     sockets.append(websocket)
 
     # new player gets created on new websocket
-    global playerIdCount, players
-    players.append(Player(None, playerIdCount, None, None))
+    #global playerIdCount, players
+    #players.append(Player(None, playerIdCount, None, None))
 
     # send room update to everyone
-    await broadcast(sockets, room_msg(players)) 
+    #await broadcast(sockets, room_msg(players))
 
     # send playerID message to player
-    await websocket.send_text( await playerid_msg(playerIdCount))
-    playerIdCount += 1
+    #await websocket.send_text( await playerid_msg(playerIdCount))
+    #playerIdCount += 1
 
-    global started
-    if started:
-        msg = b.toJson()
-        await broadcast(sockets, msg)
+    # if started:
+    #     msg = b.toJson()
+    #     await broadcast(sockets, msg)
 
     # Loop to handle all subsequent requests
     while True:
         # receive json message from client
-        data = await websocket.receive_text()
+        try:
+            data = await websocket.receive_text()
 
-        r = await handleMessage(data)
+            r = await handleMessage(data, websocket)
 
-        # if reponse generated, send response
-        if r is not None:
-            await websocket.send_text(r)
+            # if reponse generated, send response
+            if r is not None:
+                await websocket.send_text(r)
+        except Exception as e:
+            print('WARNING - websocket disconnected or otherwise borked')
+            print(e)
+            break
 
-async def handleMessage(data):
+async def handleMessage(data, client_socket):
     """
     handles different json messages from websocket connection
 
@@ -104,6 +111,8 @@ async def handleMessage(data):
     print("INFO - received request of type [{t}]".format(t = rType))
 
     global b
+    global gameID
+    global playerIdCount
     global players
     global sockets
     global numTouches
@@ -111,8 +120,44 @@ async def handleMessage(data):
     global started
 
 
+    # clients should send this when first connecting
+    if rType == "lastID":
+        """
+        {
+            type : "lastID",
+            gameID: gameID,
+            playerID : playerID
+        }
+        """
+        possibleGameID = int(r["gameID"])
+        givenID = int(r["playerID"])
+        if possibleGameID != gameID or givenID not in [p.id for p in players]:
+            # new player
+            givenID = playerIdCount
+            print('INFO - NEW player with id {}'.format(givenID))
+            players.append(Player(None, givenID, None, None))
+            # send room update to everyone
+            await broadcast(sockets, room_msg(players))
+            playerIdCount += 1
+            # the client needs to know their ID
+            await client_socket.send_text(await playerid_msg(givenID, gameID))
+
+        else:
+            # this is a reconnected player, confirm their ID
+            print('INFO - RECONNECTED player with id {}'.format(givenID))
+            await client_socket.send_text(await playerid_msg(givenID, gameID))
+            # tell the player their state info
+            player = next(p for p in players if p.id == givenID) # we're here so they definitely exist
+            await client_socket.send_text(await player_reconnect_msg(player))
+            if started:
+                # send them a board update
+                msg = b.toJson()
+                await broadcast(sockets, msg)
+                # and an update of the turn logic
+                await sendTurnMessage()
+
     #  Handles a word being touched
-    if rType == "touch":
+    elif rType == "touch":
         """
         {
             type : "touch",
@@ -156,7 +201,7 @@ async def handleMessage(data):
 
         # check win condition
         winVal = b.checkWin()
-        teamVal = BLUE if turn else RED # thanks ben
+        teamVal = BLUE if turn else RED # thanks ben # sure thing <3
 
         if winVal != 0:
             winTeam = BLUE
@@ -200,7 +245,6 @@ async def handleMessage(data):
             else:
                 await turnLogic()
 
-        # return reponse to client?
         return None
     elif rType == "observer":
         await broadcast(sockets, room_msg(players))
@@ -325,8 +369,19 @@ async def turnLogic(forceTurnChange = False):
             turn = not turn
             print("INFO - it's {c} teams turn".format(c = RED if turn is False else BLUE))
 
-    teamVal = RED if turn is False else BLUE
+    await sendTurnMessage()
 
+
+async def sendTurnMessage():
+    """
+    Function that sends turn update
+    """
+    global numTouches
+    global defaultNumTouches
+    global turn
+    global sockets
+
+    teamVal = RED if turn is False else BLUE
     redCount, blueCount = b.getScore()
 
     r = {
@@ -340,7 +395,6 @@ async def turnLogic(forceTurnChange = False):
     # broadcast turn change to everyone
     msg = json.dumps(r)
     await broadcast(sockets, msg)
-
 
 def get_sample():
     """

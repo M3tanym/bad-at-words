@@ -172,7 +172,6 @@ housing
 inflation
 insurance
 mood
-woman
 advice
 blood
 effort
@@ -478,7 +477,6 @@ stranger
 surgery
 sympathy
 tale
-throat
 trainer
 uncle
 youth
@@ -776,7 +774,6 @@ pack
 park
 plenty
 quarter
-skin
 sort
 weight
 baby
@@ -927,7 +924,6 @@ bill
 bother
 cake
 code
-curve
 designer
 dimension
 dress
@@ -976,7 +972,6 @@ bet
 blow
 border
 branch
-breast
 brother
 buddy
 bunch
@@ -1477,7 +1472,6 @@ calm
 concentrate
 estimate
 grand
-male
 mine
 prompt
 quiet
@@ -1489,20 +1483,16 @@ shake
 shift
 shine
 steal
-suck
 surround
-anybody
 bear
 brilliant
 dare
 dear
 delay
 drunk
-female
 hurry
 inevitable
 invite
-kiss
 neat
 pop
 punch
@@ -1511,13 +1501,11 @@ reply
 representative
 resist
 rip
-rub
 silly
 smile
 spell
-stretch
-stupid
 tear
+stupid
 temporary
 tomorrow
 wake
